@@ -2855,9 +2855,20 @@ async function reenviarConfirmacion() {
   }
 }
 async function cerrarSesion() {
-  await _sb.auth.signOut();
+  try {
+    await _sb.auth.signOut();
+  } catch(e) {
+    console.log('signOut error:', e);
+  }
+  _sbUser = null;
   mostrarToast('Sesión cerrada');
-  setTimeout(() => mostrarLogin(), 500);
+  setTimeout(() => {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('pantalla-portada').style.display = 'none';
+    document.getElementById('pantalla-intro').style.display = 'none';
+    document.getElementById('pantalla-login').style.display = 'block';
+    loginTab('ingreso');
+  }, 500);
 }
 
 // ── Auto-sync cada vez que se guarda un día ───────────────────
