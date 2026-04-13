@@ -2393,22 +2393,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = await checkSession();
 
   if (user) {
-    // Tiene sesión — descargar datos y entrar
+    // Tiene sesión — descargar datos y entrar directo al app
     await descargarDatos();
-    // getSK() ahora usa _sbUser.id correctamente
-    const sk = getSK();
-    try {
-      const datos = JSON.parse(localStorage.getItem(sk) || '{}');
-      const tieneDias = Object.values(datos).some(d => d && typeof d === 'object');
-      if (tieneDias) {
-        document.getElementById('app').style.display = 'block';
-        iniciarApp();
-      } else {
-        document.getElementById('pantalla-portada').style.display = 'flex';
-      }
-    } catch {
-      document.getElementById('pantalla-portada').style.display = 'flex';
-    }
+    document.getElementById('app').style.display = 'block';
+    iniciarApp();
   } else {
     // Sin sesión — mostrar login
     mostrarLogin();
@@ -2855,20 +2843,14 @@ async function reenviarConfirmacion() {
   }
 }
 async function cerrarSesion() {
-  try {
-    await _sb.auth.signOut();
-  } catch(e) {
-    console.log('signOut error:', e);
-  }
+  try { await _sb.auth.signOut(); } catch(e) {}
   _sbUser = null;
-  mostrarToast('Sesión cerrada');
-  setTimeout(() => {
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('pantalla-portada').style.display = 'none';
-    document.getElementById('pantalla-intro').style.display = 'none';
-    document.getElementById('pantalla-login').style.display = 'block';
-    loginTab('ingreso');
-  }, 500);
+  // Limpiar service worker y recargar página completamente
+  if ('serviceWorker' in navigator) {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for (let r of regs) await r.unregister();
+  }
+  window.location.reload(true);
 }
 
 // ── Auto-sync cada vez que se guarda un día ───────────────────
