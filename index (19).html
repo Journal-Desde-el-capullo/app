@@ -1,0 +1,2983 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal 100 Días desde el Capullo</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4A148C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mi Capullo">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+/* ══════════════════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════════════════ */
+:root {
+  /* Paleta inspirada en la portada "Desde el Capullo" */
+  --bg:       #F7F2FF;          /* fondo lavanda muy suave */
+  --purple:   #4A148C;          /* púrpura profundo portada */
+  --purple-m: #6A1BA0;          /* púrpura medio */
+  --purple-l: #C9A8E8;          /* lavanda suave */
+  --purple-xl:#EDE0FF;          /* lavanda muy suave */
+  --purple-xs:#FAF6FF;          /* casi blanco violáceo */
+  --gold:     #E8891A;          /* dorado mariposa */
+  --gold-l:   #F5C47A;          /* dorado claro */
+  --line:     #C9B8E8;          /* líneas lavanda */
+  --muted:    #7A60A0;          /* texto secundario */
+  --text:     #1A0A2E;          /* texto oscuro profundo */
+  --white:    #FFFFFF;
+  --danger:   #8B0000;
+  --tf: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --bf: 'Source Serif 4', 'Times New Roman', Georgia, serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--bf); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 13.5px; line-height: 1.55; }
+
+/* ══════════════════════════════════════════════════════
+   PORTADA — inspirada en portada del libro
+══════════════════════════════════════════════════════ */
+#pantalla-portada {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(ellipse at 60% 40%, rgba(232,137,26,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 30% 70%, rgba(106,27,154,0.18) 0%, transparent 55%),
+    linear-gradient(160deg, #2D0A5E 0%, #4A148C 40%, #6A1BA0 70%, #2D0A5E 100%);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+/* Destello decorativo inspirado en las chispas de la portada */
+#pantalla-portada::before {
+  content: '';
+  position: absolute;
+  top: 15%; right: 12%;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(232,137,26,0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+#pantalla-portada::after {
+  content: '';
+  position: absolute;
+  bottom: 18%; left: 10%;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(201,168,232,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.portada-box {
+  max-width: 420px; width: 100%;
+  text-align: center;
+  position: relative; z-index: 1;
+}
+.portada-emoji {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 0.4rem;
+  filter: drop-shadow(0 0 18px rgba(232,137,26,0.5));
+}
+.portada-100 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(4rem, 18vw, 7rem);
+  font-weight: 900;
+  color: #F5E6C8;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.1rem;
+  text-shadow: 0 4px 24px rgba(74,20,140,0.5);
+}
+.portada-titulo {
+  font-family: var(--tf);
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+  color: #F5E6C8;
+  line-height: 1.3;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 18px rgba(74,20,140,0.6);
+  font-weight: 400;
+}
+.portada-subtitulo {
+  font-family: var(--tf);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #F5C47A;
+  letter-spacing: 0.06em;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid rgba(245,196,122,0.4);
+}
+.portada-desc {
+  font-family: var(--bf);
+  font-size: 0.88rem;
+  line-height: 1.95;
+  color: #FFFFFF;
+  margin-bottom: 2.2rem;
+  border-left: 3px solid #E8891A;
+  padding-left: 16px;
+  text-align: left;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+}
+}
+.portada-btn {
+  font-family: var(--bf);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #E8891A 0%, #C8680A 100%);
+  color: #FFF8EE;
+  border: none;
+  padding: 14px 40px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(232,137,26,0.4);
+}
+.portada-btn:hover {
+  background: linear-gradient(135deg, #F09930 0%, #D8780A 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(232,137,26,0.5);
+}
+
+/* ══════════════════════════════════════════════════════
+   APP (oculto hasta pulsar botón portada)
+══════════════════════════════════════════════════════ */
+#app { display: none; }
+
+/* ══════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════ */
+#hdr {
+  background: var(--bg);
+  border-bottom: 2px solid var(--purple);
+  border-top: 3px solid #E8891A;
+  padding: 9px 20px 7px;
+  position: sticky; top: 0; z-index: 60;
+  box-shadow: 0 2px 12px rgba(74,20,140,0.08);
+}
+.hdr-row1 {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 10px; flex-wrap: wrap;
+}
+.hdr-title {
+  font-family: var(--tf); font-size: 0.95rem;
+  font-weight: normal; letter-spacing: 0.14em;
+  color: var(--purple); text-transform: uppercase;
+  line-height: 1; white-space: nowrap;
+}
+/* Tabs de navegación */
+.hdr-tabs {
+  display: flex; gap: 0; height: 100%; align-items: center;
+}
+.hdr-tab {
+  font-family: var(--bf); font-size: 0.7rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: var(--muted);
+  border: none; border-bottom: 2px solid transparent;
+  padding: 4px 16px; cursor: pointer;
+  transition: all 0.15s;
+}
+.hdr-tab:hover { color: var(--purple); }
+.hdr-tab.activo { color: var(--purple); border-bottom-color: var(--purple); }
+
+.hdr-nav {
+  display: flex; align-items: center;
+  gap: 7px; flex-wrap: wrap;
+}
+.hdr-day-badge {
+  font-family: var(--bf); font-size: 0.72rem;
+  color: var(--purple); letter-spacing: 0.06em; white-space: nowrap;
+}
+.nav-fecha {
+  font-family: var(--bf); font-size: 0.72rem;
+  background: transparent; border: none;
+  border-bottom: 1px solid var(--purple);
+  color: var(--purple); padding: 1px 3px;
+  outline: none; cursor: pointer; width: 126px;
+}
+.nav-sel {
+  font-family: var(--bf); font-size: 0.72rem;
+  background: transparent; border: none;
+  border-bottom: 1px solid var(--purple);
+  color: var(--purple); padding: 1px 3px;
+  outline: none; cursor: pointer;
+}
+.nav-btn {
+  font-family: var(--bf); font-size: 0.7rem;
+  letter-spacing: 0.07em; background: transparent;
+  border: 1px solid var(--purple); color: var(--purple);
+  padding: 3px 12px; cursor: pointer;
+  transition: background 0.13s, color 0.13s; white-space: nowrap;
+}
+.nav-btn:hover { background: var(--purple); color: var(--white); }
+.nav-btn:disabled { opacity: 0.32; cursor: default; }
+.nav-btn:disabled:hover { background: transparent; color: var(--purple); }
+.nav-btn.primario { background: var(--purple); color: var(--white); }
+.nav-btn.primario:hover { background: var(--purple-m); border-color: var(--purple-m); }
+
+.hdr-row2 {
+  display: flex; align-items: center;
+  gap: 8px; margin-top: 5px; flex-wrap: wrap;
+}
+.prog-track { flex-shrink: 0; width: 130px; height: 2px; background: var(--line); }
+.prog-fill { height: 100%; background: linear-gradient(90deg,var(--purple),#E8891A); transition: width 0.4s ease; }
+.prog-lbl { font-family: var(--bf); font-size: 0.62rem; color: var(--muted); white-space: nowrap; }
+.dias-mapa { display: flex; flex-wrap: wrap; gap: 2px; }
+.dia-pt {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--line); cursor: pointer;
+  transition: background 0.1s; flex-shrink: 0;
+}
+.dia-pt.done    { background: #F5C47A; }
+.dia-pt.current { background: var(--purple); }
+.dia-pt:hover   { background: var(--purple-m); }
+
+/* ══════════════════════════════════════════════════════
+   PANELES
+══════════════════════════════════════════════════════ */
+.panel { display: none; }
+.panel.activo { display: block; }
+
+/* ══════════════════════════════════════════════════════
+   PANEL DIARIO — MAIN
+══════════════════════════════════════════════════════ */
+#main {
+  max-width: 800px; margin: 0 auto;
+  padding: 18px 18px 80px;
+}
+/* Cabecera página */
+.page-head {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; border-bottom: 1px solid var(--line);
+  padding-bottom: 8px; margin-bottom: 12px; align-items: end;
+}
+.page-fecha-label { font-family: var(--bf); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.page-title-right { text-align: right; }
+.page-title-right h2 {
+  font-family: var(--tf); font-size: 0.9rem;
+  font-weight: normal; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--purple); line-height: 1.4;
+}
+
+/* FRASE */
+.frase-band {
+  margin-bottom: 12px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid #F5C47A;
+  padding-left: 10px;
+  min-height: 28px;
+}
+.frase-lbl {
+  font-family: var(--bf); font-size: 0.6rem;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--muted); display: block; margin-bottom: 5px;
+}
+.frase-txt {
+  font-family: var(--tf); font-style: italic;
+  font-size: 0.88rem; color: var(--purple); line-height: 1.55;
+}
+.frase-user {
+  font-family: var(--tf); font-style: italic;
+  font-size: 0.88rem; color: var(--purple);
+  background: transparent; border: none;
+  border-bottom: 1px dashed var(--purple-l);
+  width: 100%; padding: 2px 0; outline: none; line-height: 1.55;
+}
+.frase-user::placeholder { color: var(--purple-l); }
+.frase-user:focus { border-bottom-color: var(--purple); }
+
+/* GRID 2×2 */
+.grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 0; border: 1px solid var(--line);
+  margin-bottom: 14px;
+}
+.cuad { padding: 11px 13px; border: 1px solid var(--line); }
+
+/* Títulos sección */
+.sec-title {
+  font-family: var(--tf); font-size: 0.78rem;
+  font-weight: normal; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--purple);
+  margin-bottom: 9px; padding-bottom: 5px;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 5px;
+}
+.sec-icon { font-size: 0.88rem; color: #E8891A; }
+
+/* Campos */
+.campo { margin-bottom: 9px; }
+.campo:last-child { margin-bottom: 0; }
+.clbl {
+  display: block; font-family: var(--bf);
+  font-size: 0.66rem; letter-spacing: 0.08em;
+  color: var(--muted); margin-bottom: 4px;
+}
+
+/* Escalas 1-5 */
+.esc-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.esc-item {
+  display: flex; align-items: center; gap: 3px;
+  cursor: pointer; font-family: var(--bf);
+  font-size: 0.7rem; color: var(--text); user-select: none;
+}
+.esc-item input[type="radio"] {
+  appearance: none; -webkit-appearance: none;
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--purple-l);
+  border-radius: 50%; background: transparent;
+  cursor: pointer; flex-shrink: 0;
+  position: relative; transition: all 0.11s;
+}
+.esc-item input[type="radio"]:checked { background: var(--purple); border-color: var(--purple); }
+.esc-item input[type="radio"]:checked::after {
+  content: ''; display: block; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 5px; height: 5px; border-radius: 50%; background: var(--white);
+}
+.esc-item input[type="radio"]:hover:not(:checked) { border-color: var(--purple-m); }
+
+/* Episodio */
+.ep-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.ep-name {
+  flex: 1; font-family: var(--bf); font-size: 0.75rem;
+  background: transparent; border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--text); padding: 2px 0; outline: none; min-width: 0;
+}
+.ep-name::placeholder { color: var(--purple-l); font-style: italic; }
+.ep-name:focus { border-bottom-color: var(--purple); }
+
+/* Opciones checkbox/radio */
+.opts { display: flex; flex-wrap: wrap; gap: 4px 9px; }
+.opt-lbl {
+  display: inline-flex; align-items: center; gap: 4px;
+  cursor: pointer; font-family: var(--bf);
+  font-size: 0.73rem; color: var(--text); user-select: none;
+}
+.opt-lbl input[type="checkbox"],
+.opt-lbl input[type="radio"] {
+  appearance: none; -webkit-appearance: none;
+  width: 11px; height: 11px;
+  border: 1.5px solid var(--purple-l);
+  background: transparent; cursor: pointer;
+  flex-shrink: 0; position: relative;
+  transition: all 0.1s; border-radius: 2px;
+}
+.opt-lbl input[type="radio"] { border-radius: 50%; }
+.opt-lbl input[type="checkbox"]:checked,
+.opt-lbl input[type="radio"]:checked { background: var(--purple); border-color: var(--purple); }
+.opt-lbl input[type="checkbox"]:checked::after {
+  content: ''; position: absolute;
+  top: 0px; left: 2.5px;
+  width: 3.5px; height: 6px;
+  border: 1.5px solid var(--white);
+  border-top: none; border-left: none;
+  transform: rotate(42deg);
+}
+.opt-lbl input[type="radio"]:checked::after {
+  content: ''; position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 4px; height: 4px;
+  border-radius: 50%; background: var(--white);
+}
+
+/* Inputs de línea */
+.lin {
+  font-family: var(--bf); font-size: 0.75rem;
+  background: transparent; border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--text); padding: 2px 0;
+  outline: none; width: 100%; transition: border-color 0.13s;
+}
+.lin:focus { border-bottom-color: var(--purple); }
+.lin::placeholder { color: var(--purple-l); font-style: italic; }
+.lin-sm {
+  font-family: var(--bf); font-size: 0.73rem;
+  background: transparent; border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--text); padding: 2px 0;
+  outline: none; transition: border-color 0.13s;
+}
+.lin-sm:focus { border-bottom-color: var(--purple); }
+.lin-sm::placeholder { color: var(--purple-l); font-style: italic; }
+
+/* Subopciones condicionales */
+.sub-opts { margin-top: 4px; margin-left: 14px; display: none; }
+.sub-opts.on { display: flex; flex-wrap: wrap; gap: 4px 9px; }
+.act-que-wrap { display: none; margin-top: 5px; }
+.act-que-wrap.on { display: block; }
+.act-fila { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.act-tiempo-lbl { font-family: var(--bf); font-size: 0.66rem; color: var(--muted); }
+
+/* PIE DIAGNÓSTICO */
+.pie-diag {
+  text-align: center; margin-bottom: 12px;
+  padding: 8px 0 6px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.pie-diag p {
+  font-family: var(--bf); font-size: 0.72rem;
+  letter-spacing: 0.06em; color: var(--purple);
+  text-transform: uppercase;
+}
+
+/* PÁGINA LIBRE */
+.pagina-libre-sec { margin-bottom: 14px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.pagina-libre-sec h3 {
+  font-family: var(--tf); font-size: 0.75rem;
+  font-weight: normal; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--purple); margin-bottom: 7px;
+}
+.pagina-libre {
+  font-family: var(--bf); font-size: 0.82rem;
+  background: transparent; border: none;
+  color: var(--text); width: 100%;
+  min-height: 110px; resize: vertical; outline: none;
+  line-height: 2.1;
+  background-image: repeating-linear-gradient(
+    to bottom, transparent 0, transparent calc(2.1em - 1px),
+    var(--line) calc(2.1em - 1px), var(--line) 2.1em
+  );
+  padding: 0 2px;
+}
+.pagina-libre::placeholder { color: var(--purple-l); font-style: italic; }
+
+/* FOOTER ACCIONES */
+.footer-acc {
+  display: flex; justify-content: space-between;
+  align-items: center; padding-top: 14px;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap; gap: 8px;
+}
+.footer-left, .footer-right { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+.btn-acc {
+  font-family: var(--bf); font-size: 0.72rem;
+  letter-spacing: 0.07em; padding: 6px 16px;
+  cursor: pointer; border: 1px solid var(--purple);
+  background: transparent; color: var(--purple);
+  transition: all 0.13s; white-space: nowrap;
+}
+.btn-acc:hover { background: var(--purple); color: var(--white); }
+.btn-acc.primary {
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple-m) 100%);
+  color: var(--white);
+  border-color: var(--purple);
+}
+.btn-acc.primary:hover {
+  background: linear-gradient(135deg, var(--gold) 0%, #C8680A 100%);
+  border-color: var(--gold);
+}
+.btn-acc:disabled { opacity: 0.32; cursor: default; }
+.btn-acc:disabled:hover { background: transparent; color: var(--purple); }
+.btn-metamorfosis {
+  font-family: var(--tf); font-style: italic; font-size: 0.78rem;
+  letter-spacing: 0.05em; padding: 7px 18px;
+  border: 1px solid var(--purple);
+  background: var(--purple-xl); color: var(--purple);
+  cursor: pointer; transition: all 0.13s; display: none; white-space: nowrap;
+}
+.btn-metamorfosis:hover { background: var(--purple); color: var(--white); }
+.btn-metamorfosis.visible { display: inline-block; }
+
+/* Validación */
+.validacion-msg {
+  font-family: var(--bf); font-style: italic;
+  font-size: 0.72rem; color: var(--danger);
+  margin-top: 8px; display: none;
+}
+.validacion-msg.visible { display: block; }
+
+/* ══════════════════════════════════════════════════════
+   PANEL DASHBOARD MENSUAL
+══════════════════════════════════════════════════════ */
+#panel-dashboard {
+  max-width: 860px; margin: 0 auto;
+  padding: 24px 18px 80px;
+}
+.dash-header {
+  margin-bottom: 18px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--purple);
+  display: flex; justify-content: space-between;
+  align-items: flex-end; flex-wrap: wrap; gap: 10px;
+}
+.dash-header h2 {
+  font-family: var(--tf); font-size: 1.1rem;
+  font-weight: normal; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--purple); line-height: 1;
+}
+.dash-header p { font-family: var(--tf); font-style: italic; font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+.dash-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.dash-select {
+  font-family: var(--bf); font-size: 0.75rem;
+  background: var(--white); border: 1px solid var(--line);
+  color: var(--text); padding: 5px 10px;
+  outline: none; cursor: pointer;
+}
+.dash-refresh {
+  font-family: var(--bf); font-size: 0.7rem;
+  letter-spacing: 0.07em; background: transparent;
+  border: 1px solid var(--line); color: var(--purple);
+  padding: 5px 12px; cursor: pointer; transition: all 0.13s;
+}
+.dash-refresh:hover { background: var(--purple-xl); }
+
+/* Stats fila */
+.stats-fila {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 18px;
+}
+@media (max-width: 600px) { .stats-fila { grid-template-columns: repeat(2, 1fr); } }
+.stat-card {
+  background: var(--white); border: 1px solid var(--line);
+  border-top: 3px solid var(--purple-m);
+  padding: 10px; text-align: center;
+}
+.stat-num {
+  font-family: var(--tf); font-size: 2rem;
+  color: var(--purple); line-height: 1;
+}
+.stat-lbl { font-family: var(--bf); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+/* Correlación */
+.correlacion-box {
+  background: var(--purple-xs); border: 1px solid var(--line);
+  border-left: 3px solid var(--purple-m);
+  padding: 14px 16px; margin-bottom: 18px;
+}
+.correlacion-titulo {
+  font-family: var(--tf); font-size: 0.88rem;
+  color: var(--purple); margin-bottom: 10px;
+}
+.hallazgo-dash {
+  margin-bottom: 9px; padding-bottom: 8px;
+  border-bottom: 1px dashed var(--line);
+  font-family: var(--bf); font-size: 0.8rem; line-height: 1.65;
+}
+.hallazgo-dash:last-child { border-bottom: none; margin-bottom: 0; }
+.hallazgo-dash strong { color: var(--purple); font-weight: normal; font-style: italic; }
+
+/* Charts grid */
+.charts-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-bottom: 18px;
+}
+@media (max-width: 580px) { .charts-grid { grid-template-columns: 1fr; } }
+.chart-card { background: var(--white); border: 1px solid var(--line); padding: 12px; }
+.chart-card.full { grid-column: 1 / -1; }
+.chart-title {
+  font-family: var(--tf); font-size: 0.75rem;
+  font-weight: normal; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--purple);
+  margin-bottom: 10px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Barras CSS (sin Chart.js) */
+.barra-fila {
+  display: grid; grid-template-columns: 100px 1fr 32px;
+  gap: 6px; align-items: center; margin-bottom: 6px; font-size: 0.7rem;
+}
+.barra-label { text-align: right; color: var(--muted); font-family: var(--bf); }
+.barra-track { height: 16px; background: var(--purple-xl); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.barra-fill { height: 100%; background: var(--purple-l); transition: width 0.8s ease; }
+.barra-fill.accent { background: var(--purple-m); }
+.barra-fill.dark { background: var(--purple); }
+.barra-val { font-family: var(--bf); font-weight: bold; color: var(--purple); font-size: 0.72rem; }
+
+/* Sueño timeline */
+.sueno-timeline { display: flex; align-items: flex-end; gap: 2px; height: 80px; overflow-x: auto; }
+.sueno-col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; min-width: 14px; height: 100%; justify-content: flex-end; }
+.sueno-bar { width: 100%; background: var(--purple-l); transition: height 0.6s ease; border-radius: 1px 1px 0 0; }
+.sueno-bar.bajo { background: #C62828; }
+.sueno-bar.alto { background: var(--purple); }
+.sueno-lbl { font-size: 0.48rem; color: var(--muted); white-space: nowrap; }
+
+/* Pantallas comparativo */
+.pantallas-fila { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pant-bloque { text-align: center; padding: 8px 4px; border: 1px solid var(--line); }
+.pant-num { font-family: var(--tf); font-size: 1.4rem; color: var(--purple); line-height: 1; }
+.pant-sub { font-family: var(--bf); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+.pant-crisis { font-family: var(--bf); font-size: 0.68rem; color: var(--danger); margin-top: 2px; }
+
+/* Vacío */
+.vacio {
+  text-align: center; padding: 3rem 1rem;
+  color: var(--muted); font-family: var(--tf); font-style: italic;
+}
+.vacio-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+
+/* ══════════════════════════════════════════════════════
+   MODAL ANÁLISIS METAMORFOSIS
+══════════════════════════════════════════════════════ */
+#modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(42,26,62,0.55); z-index: 200;
+  align-items: center; justify-content: center; padding: 14px;
+}
+#modal.open { display: flex; }
+.modal-box {
+  background: var(--bg); max-width: 640px; width: 100%;
+  max-height: 88vh; overflow-y: auto;
+  padding: 22px 26px; border-top: 3px solid var(--purple);
+}
+.modal-h {
+  font-family: var(--tf); font-size: 0.92rem;
+  font-weight: normal; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--purple);
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.modal-close {
+  float: right; font-family: var(--bf); font-size: 0.68rem;
+  background: transparent; border: 1px solid var(--line);
+  color: var(--muted); padding: 2px 9px; cursor: pointer; margin-bottom: 10px;
+}
+.modal-close:hover { border-color: var(--purple); color: var(--purple); }
+.hallazgo {
+  margin-bottom: 11px; padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+  font-family: var(--bf); font-size: 0.8rem; line-height: 1.65;
+}
+.hallazgo:last-child { border-bottom: none; }
+.hallazgo strong { color: var(--purple); font-weight: normal; font-style: italic; }
+
+/* ══════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════ */
+#toast {
+  position: fixed; bottom: 18px; right: 18px;
+  background: var(--purple); color: var(--white);
+  font-family: var(--bf); font-size: 0.72rem;
+  letter-spacing: 0.06em; padding: 7px 16px;
+  z-index: 300; transform: translateX(140%);
+  transition: transform 0.26s ease;
+  border-left: 3px solid var(--purple-l); white-space: nowrap;
+}
+#toast.show { transform: translateX(0); }
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE — sin cambiar diseño, solo adaptar
+══════════════════════════════════════════════════════ */
+
+/* Dashboard stats y charts ya cubiertos arriba por queries inline */
+
+/* ── Tablet ancho (≤768px) ── */
+@media (max-width: 768px) {
+  /* Grid 2x2 a columna simple */
+  .grid-2x2 { grid-template-columns: 1fr; }
+  .page-head { grid-template-columns: 1fr; gap: 4px; }
+  .page-title-right { text-align: left; }
+
+  /* Dashboard */
+  .stats-fila { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid { grid-template-columns: 1fr; }
+  .dash-header { flex-direction: column; align-items: flex-start; }
+}
+
+/* ── Móvil (≤560px) — igual que antes + adiciones mínimas ── */
+@media (max-width: 560px) {
+  /* Heredados del original */
+  .grid-2x2 { grid-template-columns: 1fr; }
+  .page-head { grid-template-columns: 1fr; gap: 4px; }
+  .page-title-right { text-align: left; }
+  #main { padding: 12px 12px 70px; }
+  .hdr-row1 { gap: 5px; }
+  .prog-track { width: 80px; }
+  .hdr-tabs { gap: 0; }
+  .hdr-tab { padding: 4px 8px; font-size: 0.62rem; }
+
+  /* Evitar scroll horizontal */
+  body { overflow-x: hidden; }
+
+  /* Nav: envolver sin romper */
+  .hdr-nav { flex-wrap: wrap; gap: 5px; }
+  .nav-btn { padding: 6px 10px; min-height: 36px; }
+  .nav-fecha { width: 120px; }
+
+  /* Footer botones: zona táctil suficiente */
+  .footer-acc { flex-direction: column; gap: 8px; }
+  .footer-left, .footer-right { flex-wrap: wrap; gap: 5px; }
+  .btn-acc { min-height: 38px; padding: 7px 14px; }
+  .btn-acc.primary { width: 100%; min-height: 40px; }
+  .btn-metamorfosis.visible { width: 100%; }
+
+  /* Toast no se sale */
+  #toast { right: 10px; left: 10px; text-align: center; white-space: normal; }
+
+  /* Modal usable en móvil */
+  .modal-box { padding: 16px 14px; }
+
+  /* Dashboard */
+  .stats-fila { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .charts-grid { grid-template-columns: 1fr; }
+  #panel-dashboard { padding: 14px 12px 70px; }
+  .barra-fila { grid-template-columns: 72px 1fr 26px; gap: 4px; }
+
+  /* Opciones táctiles */
+  .opt-lbl { min-height: 28px; align-items: center; }
+  .opt-lbl input[type=checkbox],
+  .opt-lbl input[type=radio] { width: 13px; height: 13px; }
+}
+
+/* ── Móvil pequeño (≤390px) ── */
+@media (max-width: 390px) {
+  #hdr { padding: 8px 10px 6px; }
+  .hdr-title { font-size: 0.82rem; letter-spacing: 0.08em; }
+  #main { padding: 10px 8px 70px; }
+  .cuad { padding: 9px 9px; }
+  .portada-btn { width: 100%; }
+  .nav-btn { font-size: 0.68rem; }
+  .nav-sel { font-size: 0.7rem; }
+}
+
+.em-grupo-label {
+  width:100%; font-family:var(--tf); font-size:0.68rem;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--muted); padding:4px 0 2px;
+  border-bottom:1px solid var(--line); margin:4px 0 2px;
+  display:block;
+}
+/* Sin polarización — mismo estilo para todos los grupos */
+.em-grupo-exp { color:var(--purple-m) !important; border-color:var(--purple-l) !important; }
+.em-grupo-con { color:var(--muted) !important; border-color:var(--line) !important; }
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const _SB_URL = "https://wuzpqxfzryaslnviaodg.supabase.co";
+const _SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1enBxeGZ6cnlhc2xudmlhb2RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE4OTMsImV4cCI6MjA5MTU5Nzg5M30.GJvOkQuJulWK8hF_5ITw1r4lviAR1VmfdIx1mwIjQ7c";
+const _sb = supabase.createClient(_SB_URL, _SB_KEY);
+
+// Current session
+let _sbUser = null;
+
+// On auth state change
+_sb.auth.onAuthStateChange(async (event, session) => {
+  _sbUser = session?.user || null;
+  if (event === 'SIGNED_IN') {
+    await descargarDatos();
+    const uid = _sbUser?.id || obtenerUsuarioId();
+    const intro = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
+    const nombre = localStorage.getItem('capullo_nombre_' + uid) || '';
+    const tieneIntro = nombre || intro.tipo || intro.p1;
+
+    document.getElementById('pantalla-login').style.display = 'none';
+    if (tieneIntro) {
+      document.getElementById('pantalla-portada').style.display = 'none';
+      document.getElementById('pantalla-intro').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      if (typeof _initJournal === 'function') _initJournal();
+    } else {
+      document.getElementById('pantalla-portada').style.display = 'flex';
+    }
+    sincronizarDatos();
+  }
+  if (event === 'SIGNED_OUT') {
+    mostrarLogin();
+  }
+});
+
+// Check session on load
+async function checkSession() {
+  const { data: { session } } = await _sb.auth.getSession();
+  _sbUser = session?.user || null;
+  return _sbUser;
+}
+</script>
+</head>
+<body>
+
+<!-- ══ PANTALLA LOGIN ══════════════════════════════════════ -->
+<div id="pantalla-login" style="display:none;">
+  <div style="
+    min-height:100vh;
+    background: radial-gradient(ellipse at 60% 40%, rgba(232,137,26,0.12) 0%, transparent 60%),
+                linear-gradient(160deg, #2D0A5E 0%, #4A148C 40%, #6A1BA0 70%, #2D0A5E 100%);
+    display:flex; align-items:center; justify-content:center;
+    padding:2rem;
+  ">
+    <div style="
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(201,168,232,0.3);
+      border-radius:12px;
+      padding:36px 28px;
+      max-width:380px; width:100%;
+      backdrop-filter:blur(8px);
+    ">
+      <!-- Logo -->
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="font-size:2.4rem;filter:drop-shadow(0 0 12px rgba(232,137,26,0.5))">🦋</div>
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;
+          font-weight:900;color:#F5E6C8;margin:6px 0 2px;">100 DÍAS</div>
+        <div style="font-family:'Source Serif 4','Times New Roman',serif;
+          font-size:0.8rem;color:rgba(237,224,255,0.7);font-style:italic;">
+          desde el capullo</div>
+      </div>
+
+      <!-- Tabs registro / ingreso -->
+      <div style="display:flex;gap:0;margin-bottom:24px;border:1px solid rgba(201,168,232,0.3);border-radius:6px;overflow:hidden;">
+        <button id="login-tab-reg" onclick="loginTab('registro')" style="
+          flex:1;padding:10px;font-family:'Source Serif 4',serif;font-size:0.82rem;
+          background:rgba(74,20,140,0.6);color:#F5E6C8;border:none;cursor:pointer;
+          transition:all 0.2s;font-weight:bold;">Crear cuenta</button>
+        <button id="login-tab-ing" onclick="loginTab('ingreso')" style="
+          flex:1;padding:10px;font-family:'Source Serif 4',serif;font-size:0.82rem;
+          background:transparent;color:rgba(237,224,255,0.6);border:none;cursor:pointer;
+          transition:all 0.2s;">Ingresar</button>
+      </div>
+
+      <!-- Formulario -->
+      <div id="login-form-zone">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div id="login-nombre-campo">
+            <label style="font-family:'Source Serif 4',serif;font-size:0.75rem;
+              color:rgba(237,224,255,0.7);display:block;margin-bottom:4px;">
+              ¿Cómo quieres llamarte?</label>
+            <input id="login-nombre" type="text" placeholder="Tu nombre o apodo"
+              style="width:100%;box-sizing:border-box;
+              font-family:'Source Serif 4',serif;font-size:0.88rem;
+              background:rgba(255,255,255,0.08);border:1px solid rgba(201,168,232,0.4);
+              border-radius:6px;padding:10px 12px;color:#F5E6C8;outline:none;">
+          </div>
+          <div>
+            <label style="font-family:'Source Serif 4',serif;font-size:0.75rem;
+              color:rgba(237,224,255,0.7);display:block;margin-bottom:4px;">
+              Correo electrónico</label>
+            <input id="login-email" type="email" placeholder="tu@correo.com"
+              style="width:100%;box-sizing:border-box;
+              font-family:'Source Serif 4',serif;font-size:0.88rem;
+              background:rgba(255,255,255,0.08);border:1px solid rgba(201,168,232,0.4);
+              border-radius:6px;padding:10px 12px;color:#F5E6C8;outline:none;">
+          </div>
+          <div>
+            <label style="font-family:'Source Serif 4',serif;font-size:0.75rem;
+              color:rgba(237,224,255,0.7);display:block;margin-bottom:4px;">
+              Contraseña</label>
+            <div style="position:relative;">
+              <input id="login-pass" type="password" placeholder="Mínimo 6 caracteres"
+                style="width:100%;box-sizing:border-box;
+                font-family:'Source Serif 4',serif;font-size:0.88rem;
+                background:rgba(255,255,255,0.08);border:1px solid rgba(201,168,232,0.4);
+                border-radius:6px;padding:10px 40px 10px 12px;color:#F5E6C8;outline:none;">
+              <button type="button" onclick="togglePassword()" style="
+                position:absolute;right:10px;top:50%;transform:translateY(-50%);
+                background:transparent;border:none;cursor:pointer;
+                color:rgba(201,168,232,0.7);font-size:1rem;padding:0;line-height:1;"
+                id="btn-eye">👁</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mensaje error/éxito -->
+        <div id="login-msg" style="
+          margin-top:12px;font-family:'Source Serif 4',serif;font-size:0.8rem;
+          color:#F5C47A;text-align:center;min-height:20px;line-height:1.5;"></div>
+
+        <!-- Botón reenviar confirmación (oculto por defecto) -->
+        <div id="login-reenviar-zona" style="display:none;text-align:center;margin-top:10px;">
+          <button onclick="reenviarConfirmacion()" style="
+            font-family:'Source Serif 4',serif;font-size:0.78rem;
+            background:rgba(255,255,255,0.1);color:rgba(237,224,255,0.8);
+            border:1px solid rgba(201,168,232,0.4);border-radius:6px;
+            padding:8px 18px;cursor:pointer;transition:all 0.2s;">
+            ✉ Reenviar correo de confirmación
+          </button>
+        </div>
+
+        <!-- Botón acción -->
+        <button id="login-btn" onclick="loginAccion()" style="
+          width:100%;margin-top:16px;
+          font-family:'Playfair Display',Georgia,serif;font-size:0.9rem;font-weight:700;
+          background:linear-gradient(135deg,#E8891A,#C8680A);
+          color:#FFF8EE;border:none;border-radius:6px;
+          padding:14px;cursor:pointer;
+          box-shadow:0 4px 16px rgba(232,137,26,0.4);
+          transition:all 0.2s;">Crear mi cuenta</button>
+
+        <!-- Separador continuar sin cuenta -->
+        <div style="text-align:center;margin-top:20px;">
+          <button onclick="continuarSinCuenta()" style="
+            font-family:'Source Serif 4',serif;font-size:0.75rem;
+            background:transparent;color:rgba(237,224,255,0.45);
+            border:none;cursor:pointer;text-decoration:underline;
+            text-underline-offset:3px;">
+            Continuar sin cuenta (datos solo en este dispositivo)
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PORTADA
+══════════════════════════════════════════════════════ -->
+<div id="pantalla-portada">
+  <div class="portada-box">
+    <span class="portada-emoji">🦋</span>
+    <div class="portada-100">100</div>
+    <h1 class="portada-titulo">Días desde el Capullo</h1>
+    <p class="portada-subtitulo">Un viaje de autoconocimiento</p>
+    <p class="portada-desc">
+      100 días de preguntas puntuales sobre tu cuerpo, emociones y hábitos —
+      con honestidad y sin juicio —
+      para descubrir los patrones que rodean tus episodios.
+    </p>
+    <button class="portada-btn" onclick="irAIntro()">✦ Comenzar mi viaje ✦</button>
+    <p style="font-family:var(--bf);font-style:italic;font-size:0.68rem;
+      color:rgba(201,168,232,0.6);margin-top:1.6rem;letter-spacing:0.04em;">
+      Inspirado en el libro "Desde el Capullo" · Desarrollado por su autora
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PANTALLAS DE INTRODUCCIÓN
+══════════════════════════════════════════════════════ -->
+<div id="pantalla-intro" style="display:none;">
+
+  <!-- STEP INDICATOR -->
+  <div id="intro-step-bar" style="
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:#fff; border-bottom:2px solid #EDE0FF;
+    padding:10px 20px; display:flex; align-items:center;
+    gap:8px; font-family:'Times New Roman',serif; font-size:0.75rem;
+    color:#7A60A0;
+  ">
+    <span id="intro-step-label">Paso 1 de 4</span>
+    <div style="flex:1; height:3px; background:#EDE0FF; border-radius:2px; overflow:hidden;">
+      <div id="intro-step-fill" style="height:100%; background:linear-gradient(90deg,#4A148C,#E8891A); width:25%; transition:width 0.3s;"></div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR DE PASOS -->
+  <div id="intro-contenedor" style="
+    min-height:100vh; padding:60px 24px 40px;
+    max-width:520px; margin:0 auto;
+    font-family:'Times New Roman',serif;
+  ">
+
+    <!-- PASO 1: MI HISTORIA (Introducción) -->
+    <div class="intro-paso" id="intro-paso-1">
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div style="font-size:2.5rem; margin-bottom:1rem;">🦋</div>
+        <h2 style="font-family:Georgia,serif; font-size:1.5rem; color:#4A148C; margin-bottom:0.5rem;">Introducción</h2>
+        <div style="width:40px; height:2px; background:#C9B8E8; margin:0 auto 1.5rem;"></div>
+      </div>
+      <h3 style="font-size:1rem; font-weight:bold; color:#2A1A3E; margin-bottom:0.8rem;">Mi Historia</h3>
+      <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1rem;">Este journal nace de una historia personal. De muchos años viviendo con epilepsia, intentando entender un cuerpo que a veces parece hablar en un idioma que cuesta descifrar.</p>
+      <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1rem;">Durante mucho tiempo busqué respuestas: por qué ocurrían los episodios, qué los provocaba, si había algo que pudiera hacer para evitarlas. Con los años entendí que, aunque no siempre podemos controlar lo que sucede, sí podemos aprender a observarlo.</p>
+      <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1.5rem;">Esa observación paciente, honesta y sin juicio, es lo que yo llamo recuperar nuestra <strong>soberanía biológica</strong>. Cambia por completo la forma en que vivimos nuestra propia experiencia.</p>
+      <h3 style="font-size:1rem; font-weight:bold; color:#2A1A3E; margin-bottom:0.8rem;">Por qué observar importa</h3>
+      <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1rem;">Atravesar esta condición puede sentirse muy solitario. Pero este journal nace con una misión: que nadie tenga que recorrer este camino a ciegas.</p>
+      <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:0.8rem;">Con el tiempo, escribir te ayudará a:</p>
+      <ul style="font-size:0.9rem; line-height:1.9; color:#2A1A3E; padding-left:1.2rem; margin-bottom:1.5rem;">
+        <li>Reconocer patrones que antes pasaban desapercibidos.</li>
+        <li>Entender tus señales internas (esas alertas que solo tú sientes).</li>
+        <li>Sentir que te conoces más, recuperando la calma frente a lo incierto.</li>
+      </ul>
+      <p style="font-size:0.85rem; line-height:1.75; color:#7A60A0; font-style:italic; border-left:3px solid #C9B8E8; padding-left:12px;">No te presiones por ser perfecta. Si un día no puedes escribir, no pasa nada. El journal siempre estará aquí, sin juicios y con los brazos abiertos.</p>
+    </div>
+
+    <!-- PASO 2: LO QUE SÉ DE MÍ HOY -->
+    <div class="intro-paso" id="intro-paso-2" style="display:none;">
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.8rem;">📋</div>
+        <h2 style="font-family:Georgia,serif; font-size:1.5rem; color:#4A148C; margin-bottom:0.5rem;">Lo que sé de mí hoy</h2>
+        <div style="width:40px; height:2px; background:#C9B8E8; margin:0 auto 1rem;"></div>
+        <p style="font-size:0.82rem; color:#7A60A0; font-style:italic; line-height:1.6;">Antes de comenzar, deja escrito lo que sabes sobre tu experiencia. No tiene que ser información perfecta ni completa. Es solo un punto de partida.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div class="intro-campo">
+          <label>Tipo de epilepsia (si lo conoces)</label>
+          <input type="text" id="mi-tipo" placeholder="Ej: focal, generalizada...">
+        </div>
+        <div class="intro-campo">
+          <label>Edad en que comenzaron los episodios</label>
+          <input type="text" id="mi-edad" placeholder="Ej: 18 años">
+        </div>
+        <div class="intro-campo">
+          <label>¿Cuánto tiempo llevas viviendo con epilepsia?</label>
+          <input type="text" id="mi-tiempo" placeholder="Ej: 5 años">
+        </div>
+        <div class="intro-campo">
+          <label>¿Tus episodios están actualmente…?</label>
+          <select id="mi-control">
+            <option value="">Selecciona una opción</option>
+            <option>Controladas</option>
+            <option>Parcialmente controladas</option>
+            <option>No controladas</option>
+          </select>
+        </div>
+        <div class="intro-campo">
+          <label>Medicamentos actuales</label>
+          <div id="meds-lista" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
+          <button type="button" onclick="agregarMedicamento()" style="
+            margin-top:8px;font-family:var(--bf);font-size:0.75rem;
+            background:transparent;border:1px dashed var(--purple-l);
+            color:var(--purple);padding:6px 14px;cursor:pointer;
+            letter-spacing:0.06em;transition:all 0.15s;">
+            + Agregar medicamento
+          </button>
+        </div>
+        <div class="intro-campo">
+          <label>¿Has identificado posibles desencadenantes?</label>
+          <input type="text" id="mi-desencadenantes" placeholder="Ej: estrés, falta de sueño...">
+        </div>
+        <div class="intro-campo">
+          <label>Actividad física o deportes que practicas</label>
+          <input type="text" id="mi-actividad" placeholder="Ej: caminar, yoga...">
+        </div>
+        <div class="intro-campo">
+          <label>Pasatiempos o actividades que disfrutas</label>
+          <input type="text" id="mi-pasatiempos" placeholder="Ej: leer, diseñar...">
+        </div>
+        <div class="intro-campo">
+          <label>¿Hábitos importantes en tu día a día?</label>
+          <textarea id="mi-habitos" rows="2" placeholder="Ej: dormir 8 horas, meditar..."></textarea>
+        </div>
+        <div class="intro-campo">
+          <label>Tu zona horaria</label>
+          <select id="mi-timezone" style="font-family:var(--bf);font-size:0.83rem;color:var(--text);border:none;border-bottom:1px solid var(--line);background:transparent;padding:5px 2px;outline:none;">
+            <option value="America/Bogota">Colombia (UTC-5)</option>
+            <option value="America/Mexico_City">México Centro (UTC-6)</option>
+            <option value="America/Caracas">Venezuela (UTC-4)</option>
+            <option value="America/Lima">Perú (UTC-5)</option>
+            <option value="America/Santiago">Chile (UTC-3/-4)</option>
+            <option value="America/Argentina/Buenos_Aires">Argentina (UTC-3)</option>
+            <option value="America/Sao_Paulo">Brasil (UTC-3)</option>
+            <option value="America/New_York">EEUU Este (UTC-5/-4)</option>
+            <option value="America/Los_Angeles">EEUU Oeste (UTC-8/-7)</option>
+            <option value="Europe/Madrid">España (UTC+1/+2)</option>
+            <option value="UTC">UTC (internacional)</option>
+          </select>
+        </div>
+
+      </div><!-- fin campos paso 2 -->
+    </div><!-- fin intro-paso-2 -->
+
+    <!-- PASO 3: PREGUNTAS PARA COMENZAR -->
+    <div class="intro-paso" id="intro-paso-3" style="display:none;">
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.8rem;">🔍</div>
+        <h2 style="font-family:Georgia,serif; font-size:1.5rem; color:#4A148C; margin-bottom:0.5rem;">Preguntas para comenzar</h2>
+        <div style="width:40px; height:2px; background:#C9B8E8; margin:0 auto 1rem;"></div>
+        <p style="font-size:0.82rem; color:#7A60A0; font-style:italic; line-height:1.6;">Estas preguntas no tienen respuestas correctas o incorrectas. Son solo una invitación a mirar tu experiencia con curiosidad.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="intro-campo">
+          <label>¿Qué crees que suele provocar tus episodios?</label>
+          <textarea id="p1" rows="2" placeholder="Si has notado algún patrón..."></textarea>
+        </div>
+        <div class="intro-campo">
+          <label>¿Tu cuerpo te da alguna señal antes de un episodio?</label>
+          <textarea id="p2" rows="2" placeholder="¿Cómo la describirías?"></textarea>
+        </div>
+        <div class="intro-campo">
+          <label>Después de un episodio, ¿qué suele necesitar tu cuerpo?</label>
+          <textarea id="p3" rows="2" placeholder="Descanso, silencio, compañía..."></textarea>
+        </div>
+        <div class="intro-campo">
+          <label>¿Qué cosas te ayudan a sentirte más en equilibrio?</label>
+          <textarea id="p4" rows="2" placeholder="Hábitos, rutinas, actividades..."></textarea>
+        </div>
+        <div class="intro-campo">
+          <label>Desde que vives con epilepsia, ¿ha cambiado la forma en que te ves?</label>
+          <textarea id="p5" rows="2" placeholder="¿De qué manera?"></textarea>
+        </div>
+        <div class="intro-campo">
+          <label>¿Qué te gustaría entender mejor sobre tu experiencia?</label>
+          <textarea id="p6" rows="2" placeholder="Lo que aún no tienes claro..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 4: ANTES DE COMENZAR -->
+    <div class="intro-paso" id="intro-paso-4" style="display:none;">
+      <div style="
+        text-align:center; padding:2rem 1rem;
+        border:1px solid #EDE0FF; border-radius:8px;
+        background:#FAF6FF;
+      ">
+        <div style="font-size:2.5rem; margin-bottom:1.5rem;">🌱</div>
+        <p style="font-family:Georgia,serif; font-size:0.95rem; line-height:1.9; color:#2A1A3E; margin-bottom:1rem;">Antes de comenzar, recuerda algo importante.</p>
+        <p style="font-size:0.9rem; line-height:1.9; color:#4A148C;">Muchas veces el proceso de transformación no es visible desde fuera.</p>
+        <p style="font-size:0.9rem; line-height:1.9; color:#2A1A3E; font-style:italic; margin:1rem 0;">Un capullo parece quieto.<br>Pero dentro está ocurriendo uno de los cambios<br>más profundos de la naturaleza.</p>
+        <p style="font-size:0.9rem; line-height:1.9; color:#4A148C;">Tal vez tu proceso también se sienta así.</p>
+        <p style="font-size:1rem; line-height:2.2; color:#6A1BA0; font-style:italic;">Silencioso.<br>Confuso.<br>Lento.</p>
+        <p style="font-size:0.9rem; line-height:1.9; color:#2A1A3E; margin-bottom:1.5rem;">Y aun así, lleno de significado.</p>
+        <p style="font-family:Georgia,serif; font-size:1rem; color:#4A148C; font-weight:bold;">Hoy comienza tu observación. 🦋</p>
+      </div>
+    </div>
+
+  </div><!-- fin intro-contenedor -->
+
+  <!-- BOTONES NAVEGACIÓN inline -->
+  <div id="intro-nav" style="
+    padding:28px 0 60px;
+    display:flex; gap:12px;
+  ">
+    <button id="intro-btn-ant" onclick="introAnterior()" style="
+      flex:1; font-family:'Times New Roman',serif; font-size:0.85rem;
+      background:#FAF6FF; color:#6A1BA0;
+      border:2px solid #C9B8E8; border-radius:6px;
+      padding:14px 10px; cursor:pointer; display:none;
+    ">← Anterior</button>
+    <button id="intro-btn-sig" onclick="introSiguiente()" style="
+      flex:2; font-family:Georgia,serif; font-size:0.9rem; font-weight:bold;
+      background:linear-gradient(135deg,#4A148C,#6A1BA0);
+      color:#FFF8E1; border:none; border-radius:6px;
+      padding:14px 10px; cursor:pointer;
+      box-shadow:0 4px 16px rgba(74,20,140,0.3);
+    ">Continuar →</button>
+  </div>
+
+</div><!-- fin pantalla-intro -->
+
+<style>
+.intro-campo {
+  display:flex; flex-direction:column; gap:5px;
+}
+.intro-campo label {
+  font-family:'Times New Roman',serif;
+  font-size:0.82rem; font-weight:bold;
+  color:#2A1A3E;
+}
+.intro-campo input,
+.intro-campo select,
+.intro-campo textarea {
+  font-family:'Times New Roman',serif;
+  font-size:0.85rem; color:#2A1A3E;
+  border:none; border-bottom:1px solid #C9B8E8;
+  background:transparent; padding:5px 2px;
+  resize:none; outline:none;
+}
+.intro-campo input:focus,
+.intro-campo select:focus,
+.intro-campo textarea:focus {
+  border-bottom-color:#4A148C;
+}
+</style>
+
+<script>
+let introStepActual = 1;
+const introTotalSteps = 4;
+
+function introActualizar() {
+  // Mostrar paso correcto
+  for (let i = 1; i <= introTotalSteps; i++) {
+    const el = document.getElementById('intro-paso-' + i);
+    if (el) el.style.display = (i === introStepActual) ? 'block' : 'none';
+  }
+  // Inicializar meds cuando llegue al paso 2
+  if (introStepActual === 2) {
+    const uid = obtenerUsuarioId();
+    const intro = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
+    setTimeout(() => initMedsLista(intro.medicamentos || ''), 50);
+    // Cargar timezone si ya estaba guardada
+    const tzEl = document.getElementById('mi-timezone');
+    if (tzEl && intro.timezone) tzEl.value = intro.timezone;
+  }
+  // Step bar
+  const pct = (introStepActual / introTotalSteps * 100) + '%';
+  document.getElementById('intro-step-fill').style.width = pct;
+  document.getElementById('intro-step-label').textContent = 'Paso ' + introStepActual + ' de ' + introTotalSteps;
+  // Botón anterior
+  const btnAnt = document.getElementById('intro-btn-ant');
+  btnAnt.style.display = introStepActual > 1 ? 'block' : 'none';
+  // Botón siguiente / comenzar
+  const btnSig = document.getElementById('intro-btn-sig');
+  btnSig.textContent = introStepActual === introTotalSteps ? '¡Comenzar mi journal! 🦋' : 'Continuar →';
+  if (introStepActual === introTotalSteps) {
+    btnSig.style.background = 'linear-gradient(135deg,#E8891A,#C8680A)';
+    btnSig.style.boxShadow = '0 4px 16px rgba(232,137,26,0.4)';
+  } else {
+    btnSig.style.background = 'linear-gradient(135deg,#4A148C,#6A1BA0)';
+    btnSig.style.boxShadow = '0 4px 16px rgba(74,20,140,0.3)';
+  }
+  // Scroll al inicio
+  window.scrollTo(0,0);
+}
+
+function introSiguiente() {
+  if (introStepActual < introTotalSteps) {
+    introStepActual++;
+    introActualizar();
+  } else {
+    // Guardar datos de intro en localStorage usando ID correcto
+    const uid = obtenerUsuarioId();
+    // Recolectar medicamentos estructurados
+    const meds = [];
+    document.querySelectorAll('.med-fila').forEach(fila => {
+      const nombre = fila.querySelector('.med-nombre')?.value?.trim() || '';
+      const dosis  = fila.querySelector('.med-dosis')?.value?.trim() || '';
+      const freq   = fila.querySelector('.med-freq')?.value?.trim() || '';
+      if (nombre) meds.push({ nombre, dosis, freq });
+    });
+    const introData = {
+      tipo: document.getElementById('mi-tipo')?.value || '',
+      edadCrisis: document.getElementById('mi-edad')?.value || '',
+      tiempo: document.getElementById('mi-tiempo')?.value || '',
+      control: document.getElementById('mi-control')?.value || '',
+      medicamentos: JSON.stringify(meds),
+      desencadenantes: document.getElementById('mi-desencadenantes')?.value || '',
+      actividad: document.getElementById('mi-actividad')?.value || '',
+      pasatiempos: document.getElementById('mi-pasatiempos')?.value || '',
+      habitos: document.getElementById('mi-habitos')?.value || '',
+      timezone: document.getElementById('mi-timezone')?.value || 'America/Bogota',
+      p1: document.getElementById('p1')?.value || '',
+      p2: document.getElementById('p2')?.value || '',
+      p3: document.getElementById('p3')?.value || '',
+      p4: document.getElementById('p4')?.value || '',
+      p5: document.getElementById('p5')?.value || '',
+      p6: document.getElementById('p6')?.value || '',
+    };
+    localStorage.setItem('capullo_intro_' + uid, JSON.stringify(introData));
+    console.log('Intro guardada para uid:', uid);
+    // Ir al diario
+    document.getElementById('pantalla-intro').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    iniciarApp();
+    // Sincronizar si hay sesión
+    if (typeof sincronizarDatos === 'function' && _sbUser) {
+      setTimeout(sincronizarDatos, 500);
+    }
+  }
+}
+
+// ── Medicamentos dinámicos ─────────────────────────────────
+let _medCount = 0;
+function agregarMedicamento(data) {
+  _medCount++;
+  const lista = document.getElementById('meds-lista');
+  if (!lista) return;
+  const fila = document.createElement('div');
+  fila.className = 'med-fila';
+  fila.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1.5fr auto;gap:6px;align-items:end;';
+  fila.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <span style="font-size:0.63rem;color:var(--muted);letter-spacing:0.06em;">Medicamento</span>
+      <input type="text" class="med-nombre lin" placeholder="Nombre…" value="${data?.nombre||''}">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <span style="font-size:0.63rem;color:var(--muted);letter-spacing:0.06em;">Dosis</span>
+      <input type="text" class="med-dosis lin" placeholder="mg…" value="${data?.dosis||''}">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <span style="font-size:0.63rem;color:var(--muted);letter-spacing:0.06em;">Frecuencia</span>
+      <input type="text" class="med-freq lin" placeholder="cada cuánto…" value="${data?.freq||''}">
+    </div>
+    <button type="button" onclick="this.closest('.med-fila').remove()"
+      style="background:transparent;border:none;color:var(--muted);cursor:pointer;
+      font-size:1rem;padding:2px 4px;line-height:1;">×</button>
+  `;
+  lista.appendChild(fila);
+}
+
+// Inicializar lista de meds al llegar al paso 2
+function initMedsLista(medData) {
+  const lista = document.getElementById('meds-lista');
+  if (!lista) return;
+  lista.innerHTML = '';
+  _medCount = 0;
+  let meds = [];
+  try { meds = JSON.parse(medData || '[]'); } catch { meds = []; }
+  if (meds.length === 0) {
+    agregarMedicamento(); // Al menos una fila vacía
+  } else {
+    meds.forEach(m => agregarMedicamento(m));
+  }
+}
+
+function introAnterior() {
+  if (introStepActual > 1) {
+    introStepActual--;
+    introActualizar();
+  }
+}
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     APP
+══════════════════════════════════════════════════════ -->
+<div id="app">
+
+<!-- HEADER -->
+<header id="hdr">
+  <div class="hdr-row1">
+    <h1 class="hdr-title">♥ Mi Viaje desde el Capullo</h1>
+    <div class="hdr-tabs">
+      <button class="hdr-tab" id="tab-perfil" onclick="mostrarPanel('perfil')">Mi Perfil</button>
+      <button class="hdr-tab activo" id="tab-diario" onclick="mostrarPanel('diario')">Diario</button>
+      <button class="hdr-tab" id="tab-dashboard" onclick="mostrarPanel('dashboard')">Dashboard</button>
+    </div>
+    <div class="hdr-nav" id="hdr-nav-diario">
+      <button class="nav-btn" id="btn-ant" onclick="navegarDia(-1)">&#8592; Anterior</button>
+      <select class="nav-sel" id="sel-dia" onchange="irADia(+this.value)"></select>
+      <input type="date" class="nav-fecha" id="nav-fecha" title="Fecha del registro">
+      <button class="nav-btn primario" id="btn-sig" onclick="intentarSiguiente()">Siguiente &#8594;</button>
+      <span class="hdr-day-badge" id="badge-dia">Día 1 · 100</span>
+    </div>
+  </div>
+  <div class="hdr-row2">
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <span class="prog-lbl" id="prog-lbl">0 / 100 días</span>
+    <div class="dias-mapa" id="mapa"></div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════
+     PANEL DIARIO
+══════════════════════════════════════════════════════ -->
+<div id="panel-diario" class="panel activo">
+<div id="main">
+
+  <!-- Cabecera página -->
+  <div class="page-head">
+    <div>
+      <span class="page-fecha-label">Fecha: &nbsp;</span>
+      <span id="fecha-display" style="font-family:var(--bf);font-size:0.78rem;color:var(--purple);border-bottom:1px solid var(--line);display:inline-block;min-width:130px;">&nbsp;</span>
+    </div>
+    <div class="page-title-right">
+      <h2>Diario de<br>Observación Personal</h2>
+    </div>
+  </div>
+
+  <!-- FRASE DEL DÍA -->
+  <div class="frase-band">
+    <span class="frase-lbl">Frase del día</span>
+    <div id="frase-zona"></div>
+  </div>
+
+  <!-- GRID 2×2 -->
+  <div class="grid-2x2">
+
+    <!-- CUAD 1: MI SISTEMA NERVIOSO (col izq, fila 1) -->
+    <div class="cuad">
+      <h3 class="sec-title"><span class="sec-icon">✧</span> Mi Sistema Nervioso</h3>
+
+      <div class="campo">
+        <span class="clbl">Episodio 1</span>
+        <div class="ep-row">
+          <input type="text" class="ep-name" id="ep1-n" placeholder="Describir…">
+        </div>
+        <div class="esc-row" id="esc-ep1"></div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Episodio 2</span>
+        <div class="ep-row">
+          <input type="text" class="ep-name" id="ep2-n" placeholder="Describir…">
+        </div>
+        <div class="esc-row" id="esc-ep2"></div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Cansancio del sistema nervioso</span>
+        <div class="esc-row" id="esc-can"></div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Cambios en el tratamiento hoy</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="checkbox" id="tr-med"><span>Medicamento</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="tr-dos"><span>Dosis</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="tr-hor"><span>Horario</span></label>
+        </div>
+        <div style="margin-top:4px;">
+          <span class="clbl">¿Cuál cambio?</span>
+          <input type="text" class="lin" id="tr-cual">
+        </div>
+      </div>
+    </div>
+
+    <!-- CUAD 2: MI MUNDO EMOCIONAL (col der, fila 1) -->
+    <div class="cuad">
+      <h3 class="sec-title"><span class="sec-icon" style="color:#9C27B0;">♥</span> Mi Mundo Emocional</h3>
+
+      <div class="campo">
+        <span class="clbl">Emociones presentes hoy</span>
+        <div class="opts">
+          <div class="em-grupo-label em-grupo-exp">Expansión</div>
+          <label class="opt-lbl"><input type="checkbox" id="em-est"><span>Estrés</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-ans"><span>Ansiedad</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-irr"><span>Irritabilidad</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-ale"><span>Alegría</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-ent"><span>Entusiasmo</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-ene"><span>Energía</span></label>
+          <div class="em-grupo-label em-grupo-con">Contención</div>
+          <label class="opt-lbl"><input type="checkbox" id="em-tri"><span>Tristeza</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-mie"><span>Miedo</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-cal"><span>Calma</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-gra"><span>Gratitud</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-con"><span>Confianza</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-bie"><span>Bienestar</span></label>
+        </div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Emoción predominante</span>
+        <input type="text" class="lin" id="em-pred">
+        <input type="text" class="lin" id="em-nota" placeholder="Notas…" style="margin-top:4px;">
+      </div>
+    </div>
+
+    <!-- CUAD 3: MI CUERPO (col izq, fila 2) -->
+    <div class="cuad">
+      <h3 class="sec-title"><span class="sec-icon">◦</span> Mi Cuerpo</h3>
+
+      <div class="campo">
+        <span class="clbl">Alimentación</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="checkbox" id="al-cas"><span>Casera</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="al-pro"><span>Procesada</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="al-cam"><span>Cambios</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="al-azu"><span>Azúcar</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="al-caf"><span>Cafeína</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="al-ant"><span>Antojos</span></label>
+        </div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Digestión — ¿Hubo evacuación?</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="radio" name="dig" id="dig-si" value="si" onchange="toggleDig(this)"><span>Sí</span></label>
+          <label class="opt-lbl"><input type="radio" name="dig" id="dig-no" value="no" onchange="toggleDig(this)"><span>No</span></label>
+        </div>
+        <div class="sub-opts" id="sub-dig">
+          <label class="opt-lbl"><input type="radio" name="digT" id="dig-nor" value="normal"><span>Normal</span></label>
+          <label class="opt-lbl"><input type="radio" name="digT" id="dig-dia" value="diarrea"><span>Diarrea</span></label>
+          <label class="opt-lbl"><input type="radio" name="digT" id="dig-est" value="estreñimiento"><span>Estreñimiento</span></label>
+        </div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Actividad física</span>
+        <div class="act-fila">
+          <label class="opt-lbl"><input type="radio" name="act" id="act-si" value="si" onchange="toggleAct(this)"><span>Sí</span></label>
+          <label class="opt-lbl"><input type="radio" name="act" id="act-no" value="no" onchange="toggleAct(this)"><span>No</span></label>
+          <span class="act-tiempo-lbl">Tiempo:</span>
+          <input type="text" class="lin-sm" id="act-t" placeholder="min" style="width:48px;">
+        </div>
+        <div class="act-que-wrap" id="act-q-wrap">
+          <span class="clbl">¿Qué hice?</span>
+          <input type="text" class="lin" id="act-q">
+        </div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Dolores o molestias</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="checkbox" id="do-foc"><span>Cabeza (foco)</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="do-grl"><span>Cabeza general</span></label>
+        </div>
+        <input type="text" class="lin" id="do-otr" placeholder="Otro…" style="margin-top:3px;">
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Ciclo menstrual (si aplica)</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="radio" name="ciclo" id="ci-si" value="si"><span>Sí</span></label>
+          <label class="opt-lbl"><input type="radio" name="ciclo" id="ci-no" value="no"><span>No</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUAD 4: EL DESCANSO (col der, fila 2) -->
+    <div class="cuad">
+      <h3 class="sec-title"><span class="sec-icon">◌</span> El Descanso</h3>
+
+      <div class="campo">
+        <span class="clbl">Horas de sueño</span>
+        <input type="number" class="lin" id="sl-h" min="0" max="24" step="0.5" placeholder="ej: 7.5" style="width:80px;">
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Calidad del sueño</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="radio" name="slCal" id="sl-pro" value="profundo"><span>Profundo</span></label>
+          <label class="opt-lbl"><input type="radio" name="slCal" id="sl-int" value="interrumpido"><span>Interrumpido</span></label>
+          <label class="opt-lbl"><input type="radio" name="slCal" id="sl-sup" value="superficial"><span>Superficial</span></label>
+        </div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Trasnocho</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="checkbox" id="tr2-tra"><span>Trabajo</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="tr2-pan"><span>Pantallas</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="tr2-eve"><span>Eventos</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="tr2-ins"><span>Insomnio</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="tr2-luz"><span>Luces estimulantes</span></label>
+        </div>
+        <input type="text" class="lin" id="tr2-otr" placeholder="Otro…" style="margin-top:3px;">
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Exposición a pantallas</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="radio" name="pant" id="pa-baj" value="baja"><span>Baja</span></label>
+          <label class="opt-lbl"><input type="radio" name="pant" id="pa-med" value="media"><span>Media</span></label>
+          <label class="opt-lbl"><input type="radio" name="pant" id="pa-alt" value="alta"><span>Alta</span></label>
+        </div>
+      </div>
+
+      <div class="campo">
+        <span class="clbl">Hábitos nocturnos</span>
+        <div class="opts">
+          <label class="opt-lbl"><input type="checkbox" id="hb-med"><span>Meditación</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="hb-lec"><span>Lectura</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="hb-beb"><span>Bebida Nat.</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="hb-esc"><span>Escáner corporal</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="hb-aud"><span>Audio/Sonido</span></label>
+        </div>
+        <input type="text" class="lin" id="hb-otr" placeholder="Otro…" style="margin-top:3px;">
+      </div>
+    </div>
+
+  </div><!-- /grid-2x2 -->
+
+
+  <!-- PÁGINA LIBRE -->
+  <div class="pagina-libre-sec">
+    <h3>✎ &nbsp;Vivencias y Observaciones</h3>
+    <textarea class="pagina-libre" id="pag-lib" placeholder="Escribe aquí lo que quieras…"></textarea>
+  </div>
+
+  <!-- VALIDACIÓN -->
+  <div class="validacion-msg" id="val-msg">
+    Para avanzar al siguiente día, completa al menos un campo del registro de hoy.
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-acc">
+    <div class="footer-left">
+      <button class="btn-acc" id="btn-ant-f" onclick="navegarDia(-1)">&#8592; Anterior</button>
+      <button class="btn-acc" onclick="pedirLimpiar()">Limpiar</button>
+      <button class="btn-acc" onclick="exportJSON()" style="font-size:0.65rem;">⬇ Exportar</button>
+    </div>
+    <div class="footer-right">
+      <button class="btn-acc" onclick="guardarSolo()">Guardar</button>
+      <button class="btn-acc primary" id="btn-guardar" onclick="guardarYSiguiente()">Guardar y Siguiente &#8594;</button>
+      <button class="btn-metamorfosis" id="btn-meta" onclick="abrirAnalisis()">
+        🦋 Análisis de mi Metamorfosis
+      </button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /panel-diario -->
+
+<!-- ══════════════════════════════════════════════════════
+     PANEL DASHBOARD
+══════════════════════════════════════════════════════ -->
+<div id="panel-dashboard" class="panel">
+  <div class="dash-header">
+    <div>
+      <h2>Dashboard</h2>
+      <p>Análisis de tus patrones de salud</p>
+    </div>
+    <div class="dash-controls">
+      <select class="dash-select" id="dash-periodo" onchange="renderDashboard()">
+        <option value="0">Días 1 – 30</option>
+        <option value="1">Días 31 – 60</option>
+        <option value="2">Días 61 – 100</option>
+      </select>
+      <button class="dash-refresh" onclick="renderDashboard()">↻ Actualizar</button>
+    </div>
+  </div>
+  <div id="dash-inner"></div>
+</div>
+
+<!-- ══ PANEL MI PERFIL ══════════════════════════════════════ -->
+<div id="panel-perfil" class="panel" style="display:none;">
+<div style="max-width:600px;margin:0 auto;padding:20px 16px 60px;">
+
+  <!-- NOMBRE USUARIO -->
+  <div style="text-align:center; padding:28px 0 20px; border-bottom:1px solid var(--line); margin-bottom:24px;">
+    <div style="font-size:2rem;margin-bottom:8px;">🦋</div>
+    <div id="perfil-nombre-display" style="font-family:var(--tf);font-size:1.9rem;font-weight:700;color:var(--purple);margin-bottom:12px;">—</div>
+    <div id="perfil-nombre-edit-zone"></div>
+  </div>
+
+  <!-- DATOS PERSONALES -->
+  <div style="margin-bottom:24px;">
+    <h3 style="font-family:var(--tf);font-size:0.95rem;color:var(--purple);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+      <span style="color:#E8891A;">✦</span> Lo que sé de mí hoy
+    </h3>
+    <div id="perfil-datos-inicio" style="font-family:var(--bf);font-size:0.83rem;line-height:1.9;color:var(--text);background:var(--purple-xs);padding:14px;border-left:3px solid var(--line);"></div>
+  </div>
+
+  <!-- PREGUNTAS INICIALES -->
+  <div style="margin-bottom:32px;">
+    <h3 style="font-family:var(--tf);font-size:0.95rem;color:var(--purple);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+      <span style="color:#E8891A;">✦</span> Mis respuestas iniciales
+    </h3>
+    <div id="perfil-preguntas" style="font-family:var(--bf);font-size:0.83rem;line-height:1.9;color:var(--text);background:var(--purple-xs);padding:14px;border-left:3px solid var(--line);"></div>
+  </div>
+
+  <!-- VER PRESENTACION + CERRAR SESIÓN -->
+  <div style="text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;">
+    <button onclick="verIntroDesdePerfil()" style="
+      font-family:var(--tf);font-size:0.82rem;font-style:italic;
+      background:transparent;color:var(--purple);
+      border:1px solid var(--purple-l);padding:11px 24px;
+      cursor:pointer;width:260px;">Ver presentación completa del journal</button>
+    <button onclick="sincronizarDatos()" style="
+      font-family:var(--bf);font-size:0.82rem;
+      background:transparent;color:#E8891A;
+      border:1px solid #F5C47A;padding:11px 24px;
+      cursor:pointer;width:260px;">☁ Guardar en la nube ahora</button>
+    <button onclick="cerrarSesion()" style="
+      font-family:var(--bf);font-size:0.82rem;
+      background:transparent;color:var(--purple);
+      border:1px solid var(--purple);padding:11px 24px;
+      cursor:pointer;width:260px;">Cerrar sesión</button>
+  </div>
+
+</div>
+</div>
+
+
+</div><!-- /app -->
+
+<!-- MODAL ANÁLISIS -->
+<div id="modal" onclick="cerrarFondo(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="cerrarModal()">✕ cerrar</button>
+    <h3 class="modal-h">🦋 Análisis de mi Metamorfosis — 100 Días</h3>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════ -->
+<script>
+/* ─── FRASES ─── */
+const FRASES = {
+  1:"Un diagnóstico no viene con instrucciones; conocerse es imprescindible.",
+  2:"Ese día desperté sin reconocer mi entorno... el mundo se había vuelto extraño.",
+  3:"Intentaba explicarlo, pero la respuesta era siempre la misma: \"es normal\".",
+  4:"El púrpura no es un enemigo, es el color de tu propia metamorfosis.",
+  5:"Nadie vive la epilepsia por ti. Nadie siente lo que tu cuerpo siente.",
+  6:"El diagnóstico me dio un nombre, pero la experiencia me dio una verdad.",
+  7:"Nunca hubo una revisión más profunda; pasé el año entre dudas ignoradas.",
+  8:"La parte humana del proceso empezó después de lo clínico.",
+  9:"No te disculpes por necesitar oscuridad cuando el mundo brilla demasiado.",
+  10:"Mi pijama de ositos era el único refugio en un mundo de batas blancas.",
+  11:"Existe un vacío enorme entre lo médico y lo personal.",
+  12:"Mi sistema nervioso no es un error, es un mapa que aún estoy aprendiendo a leer.",
+  13:"La teoría me dio un nombre, pero yo tuve que aprender a escuchar mis silencios.",
+  14:"Ese Déjà vu marcó mi último año, aunque no entendía su peso real.",
+  15:"Sentir extrañeza es el primer paso para encontrar tu nueva verdad.",
+  16:"Un diagnóstico no es una sentencia, sino un cambio de ritmo.",
+  17:"Habitar el cuerpo con respeto, sin pelea, sin negación.",
+  18:"Mi cuerpo no estaba fallando: estaba hablando.",
+  19:"La incertidumbre es una habitación oscura donde aprendemos a ver con el alma.",
+  20:"Descansar también es avanzar.",
+  21:"Si hoy el cielo es púrpura, recuerda que eres la aviadora, no la tormenta.",
+  22:"Cada episodio es una pausa obligada para volver a lo esencial.",
+  23:"No somos personas dañadas; somos personas aprendiendo a habitar lo que somos.",
+  24:"La libertad que soñé tomó un camino diferente, pero no desapareció.",
+  25:"Escribir \"al desnudo\" es la forma más valiente de sanar las heridas.",
+  26:"Aceptar no me hizo más débil; me hizo más atenta, más honesta.",
+  27:"Mi vulnerabilidad puesta en papel es mi armadura más resistente.",
+  28:"No dejes que un mal día te convenza de que tienes una mala vida.",
+  29:"El capullo es un lugar apretado, pero es el único donde crecen las alas.",
+  30:"Hoy elijo ser amable con mi proceso, incluso cuando no lo entiendo.",
+  31:"Tu registro de hoy es el abrazo que tu \"yo\" de mañana agradecerá.",
+  32:"La honestidad conmigo misma es el remedio más dulce para el miedo.",
+  33:"Incluso en el caos, tu mano es capaz de crear orden sobre el papel.",
+  34:"El púrpura también se instaló en las noches de otros para hacernos familia.",
+  35:"No pelees con tu ritmo; baila con él, aunque la música sea distinta.",
+  36:"La naturaleza y la aventura también son medicina para mis neuronas.",
+  37:"Tu valentía es el faro que guía mis propios miedos.",
+  38:"El proceso continúa. Y hoy, estar aquí es mi mayor victoria.",
+  39:"Hoy sé que no se trata de vencer nada, sino de habitarlo todo.",
+  40:"Observar mi propio \"púrpura\" me enseñó a no temblar ante el espejo.",
+  41:"Verte caer me enseñó a admirar cómo siempre te levantas.",
+  42:"Acompañar desde el corazón es una acción valiosa y transformadora.",
+  43:"No estamos obligadas a permanecer en lugares que nos desgastan.",
+  44:"A veces basta con no cargar todo en silencio.",
+  45:"El dibujo de mi vida no muestra lo que soy, sino lo que atravesé.",
+  46:"Cuando dejé de exigirle normalidad, mi cuerpo me mostró su ritmo.",
+  47:"Si el alma está en paz, el sistema nervioso encuentra su centro.",
+  48:"Mi historia al desnudo es mi mayor acto de libertad.",
+  49:"El viaje al interior es la aventura más arriesgada y hermosa.",
+  51:"Mis neuronas bailan a un ritmo que el mundo no siempre entiende.",
+  52:"El amor de quienes me rodean es mi red de seguridad más firme.",
+  53:"La humildad para pedir ayuda es la mayor muestra de fuerza.",
+  54:"El silencio en el hospital me enseñó a escuchar mis verdades.",
+  56:"Cada anotación en este diario es un gramo menos de peso en tu alma.",
+  57:"No busques la cura afuera; busca la paz aquí adentro.",
+  58:"Soy la capitana de mi capullo y la arquitecta de mis alas.",
+  59:"La resiliencia no es no caer, es saber qué hacer mientras bajas.",
+  61:"Mi pijama de ositos fue mi uniforme de batalla.",
+  62:"Escuchar mi propio cansancio me salvó de la oscuridad total.",
+  63:"El diagnóstico es una etiqueta; tú eres el libro completo.",
+  64:"Aprender a decir \"hoy no puedo\" es una victoria del alma.",
+  66:"El universo tiene un plan, incluso cuando el electrograma dice otra cosa.",
+  67:"La montaña y el bus de regreso fueron mis templos de sanación.",
+  68:"No hay prisa para florecer.",
+  69:"Mi proceso de transformación es constante, como el respirar.",
+  71:"El miedo es un maestro que a veces habla demasiado alto.",
+  72:"Registra tu dolor para que no se convierta en rencor hacia tu cuerpo.",
+  73:"Tu luz brilla más fuerte después de haber habitado la sombra.",
+  74:"La gratitud es la fragancia de hierbas medicinales para el espíritu.",
+  76:"Ser honesta con mi dolor me permitió encontrar mi alegría.",
+  77:"Mi familia aprendió a mirar el púrpura con amor, no con terror.",
+  78:"El capullo es protección, no es aislamiento.",
+  79:"La vida continúa después del episodio; recuérdalo al despertar.",
+  81:"Tu sistema nervioso es una red de estrellas; a veces hay tormentas solares.",
+  82:"No te juzgues por lo que no puedes controlar.",
+  83:"Tu Journal es tu santuario personal.",
+  84:"Cada palabra escrita es una neurona que se calma.",
+  86:"El viaje es largo, pero el paisaje interior es hermoso.",
+  87:"Honra tu pijama, tu descanso y tu silencio.",
+  88:"El amor es la mejor remisión médica.",
+  89:"La transformación duele, pero la libertad cura.",
+  91:"Sé tu propia mejor amiga en los días de sombra.",
+  92:"El diario es el puente entre el síntoma y el sentimiento.",
+  93:"No permitas que la epilepsia escriba el final de tu historia.",
+  94:"Tu vulnerabilidad es tu superpoder.",
+  96:"El aire libre y el corazón abierto son el mejor tratamiento.",
+  97:"Mañana será un nuevo día para registrar tu luz.",
+  98:"El proceso continúa. Y hoy, estar aquí es mi mayor victoria.",
+  99:"Hoy fue suficiente observarme.",
+  100:"Un diagnóstico no viene con instrucciones; conocerse es imprescindible."
+};
+const DIAS_USUARIO = new Set([50,55,60,65,70,75,80,85,90,95]);
+
+/* ─── USUARIO ÚNICO (UUID automático, sin login) ─── */
+function obtenerUsuarioId() {
+  // Si hay sesión de Supabase activa, usar ese ID (consistente entre dispositivos)
+  if (typeof _sbUser !== 'undefined' && _sbUser && _sbUser.id) {
+    return _sbUser.id;
+  }
+  // Sin sesión: usar UID local del dispositivo
+  const KEY = 'capullo_uid';
+  try {
+    let uid = localStorage.getItem(KEY);
+    if (!uid) {
+      uid = 'u_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2,8);
+      localStorage.setItem(KEY, uid);
+    }
+    return uid;
+  } catch {
+    if (!window._uid) window._uid = 'ses_' + Date.now().toString(36);
+    return window._uid;
+  }
+}
+const USER_ID = obtenerUsuarioId();
+const SK = 'capullo_v5_' + USER_ID;
+let diaActual = 1;
+let _autoTimer = null;
+
+// Helper dinámico para obtener la storage key correcta (con sesión o sin ella)
+function getSK() {
+  return 'capullo_v5_' + obtenerUsuarioId();
+}
+
+/* ─── STORAGE SEGURO ─── */
+const ST = {
+  all() {
+    try {
+      const raw = localStorage.getItem(getSK());
+      if (!raw) return {};
+      const p = JSON.parse(raw);
+      return (typeof p === 'object' && !Array.isArray(p)) ? p : {};
+    } catch (e) { console.error('Error leyendo journal:', e); return {}; }
+  },
+  save(data) {
+    try {
+      const json = JSON.stringify(data);
+      localStorage.setItem(getSK(), json);
+      if (localStorage.getItem(getSK()) !== json) throw new Error('Verificación falló');
+      return true;
+    } catch (e) {
+      console.error('Error guardando:', e);
+      const msg = e.name === 'QuotaExceededError'
+        ? 'Almacenamiento lleno. Exporta tus datos para liberar espacio.'
+        : 'No se pudo guardar. Revisa la configuración de tu navegador.';
+      toastError(msg);
+      return false;
+    }
+  },
+  get(n) { try { return this.all()[n] || null; } catch { return null; } },
+  set(n, d) { try { const a = this.all(); a[n] = d; return this.save(a); } catch { return false; } }
+};
+
+/* ─── DOM HELPERS ─── */
+const el = id => document.getElementById(id);
+const chkG = id => el(id)?.checked || false;
+const chkS = (id, v) => { if (el(id)) el(id).checked = !!v; };
+const valG = id => (el(id)?.value || '').trim();
+const valS = (id, v) => { if (el(id)) el(id).value = v == null ? '' : v; };
+const radG = n => { const s = document.querySelector(`input[name="${n}"]:checked`); return s ? s.value : null; };
+const radS = (n, v) => document.querySelectorAll(`input[name="${n}"]`).forEach(r => r.checked = r.value === v);
+const radCl = n => document.querySelectorAll(`input[name="${n}"]`).forEach(r => r.checked = false);
+const escG = n => { const s = document.querySelector(`input[name="${n}"]:checked`); return s ? +s.value : null; };
+const escS = (n, v) => document.querySelectorAll(`input[name="${n}"]`).forEach(r => r.checked = +r.value === v);
+const escCl = n => document.querySelectorAll(`input[name="${n}"]`).forEach(r => r.checked = false);
+
+/* ─── ESCALAS ─── */
+function crearEscala(cid, nombre) {
+  const c = el(cid); if (!c) return;
+  c.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const lbl = document.createElement('label');
+    lbl.className = 'esc-item';
+    const inp = document.createElement('input');
+    inp.type = 'radio'; inp.name = nombre; inp.value = i;
+    lbl.appendChild(inp); lbl.appendChild(document.createTextNode(i));
+    c.appendChild(lbl);
+  }
+}
+
+/* ─── CONDICIONALES ─── */
+function toggleDig(r) {
+  const s = el('sub-dig'); if (!s) return;
+  if (r.value === 'si') s.classList.add('on');
+  else { s.classList.remove('on'); radCl('digT'); }
+}
+function toggleAct(r) {
+  const w = el('act-q-wrap'); if (!w) return;
+  if (r.value === 'si') w.classList.add('on');
+  else { w.classList.remove('on'); valS('act-q', ''); }
+}
+
+/* ─── RECOLECTAR ─── */
+function recolectar() {
+  const dig = radG('dig');
+  const ep1s = escG('esc1'), ep2s = escG('esc2');
+  const n1 = valG('ep1-n'), n2 = valG('ep2-n');
+  const numEp = ((n1 || ep1s) ? 1 : 0) + ((n2 || ep2s) ? 1 : 0);
+  const fecha = valG('nav-fecha') || hoy();
+  return {
+    dia: diaActual, fecha, ts: Date.now(),
+    fraseU: DIAS_USUARIO.has(diaActual) ? valG('frase-u') : null,
+    ep1n: n1, ep1s, ep2n: n2, ep2s, can: escG('escC'), numEp,
+    trMed: chkG('tr-med'), trDos: chkG('tr-dos'), trHor: chkG('tr-hor'), trCual: valG('tr-cual'),
+    // Expansión
+    emEst: chkG('em-est'), emAns: chkG('em-ans'), emIrr: chkG('em-irr'),
+    emAle: chkG('em-ale'), emEnt: chkG('em-ent'), emEne: chkG('em-ene'),
+    // Contención
+    emTri: chkG('em-tri'), emMie: chkG('em-mie'), emCal: chkG('em-cal'),
+    emGra: chkG('em-gra'), emCon: chkG('em-con'), emBie: chkG('em-bie'),
+    emPred: valG('em-pred'), emNota: valG('em-nota'),
+    alCas: chkG('al-cas'), alPro: chkG('al-pro'), alCam: chkG('al-cam'),
+    alAzu: chkG('al-azu'), alCaf: chkG('al-caf'), alAnt: chkG('al-ant'),
+    dig, digT: dig === 'si' ? radG('digT') : null,
+    act: radG('act'), actT: valG('act-t'), actQ: valG('act-q'),
+    doFoc: chkG('do-foc'), doGrl: chkG('do-grl'), doOtr: valG('do-otr'),
+    ciclo: radG('ciclo'), pant: radG('pant'),
+    slH: parseFloat(valG('sl-h')) || null, slCal: radG('slCal'),
+    trTra: chkG('tr2-tra'), trPan: chkG('tr2-pan'), trEve: chkG('tr2-eve'),
+    trIns: chkG('tr2-ins'), trLuz: chkG('tr2-luz'), trOtr: valG('tr2-otr'),
+    hbMed: chkG('hb-med'), hbLec: chkG('hb-lec'), hbBeb: chkG('hb-beb'),
+    hbEsc: chkG('hb-esc'), hbAud: chkG('hb-aud'), hbOtr: valG('hb-otr'),
+    pag: valG('pag-lib'),
+  };
+}
+
+/* ─── VALIDACIÓN REAL (con trim) ─── */
+function tieneDatos(e) {
+  if (!e) return false;
+  const textos = [e.ep1n, e.ep2n, e.trCual, e.emPred, e.emNota,
+                  e.actQ, e.actT, e.doOtr, e.trOtr, e.hbOtr, e.pag];
+  const tieneTexto = textos.some(t => typeof t === 'string' && t.trim().length > 0);
+  const tieneFrase = e.fraseU && typeof e.fraseU === 'string' && e.fraseU.trim().length > 0;
+  const tieneSel = !!(e.ep1s || e.ep2s || e.can ||
+    e.trMed || e.trDos || e.trHor ||
+    e.emEst || e.emAns || e.emIrr || e.emAle || e.emEnt || e.emEne ||
+    e.emTri || e.emMie || e.emCal || e.emGra || e.emCon || e.emBie ||
+    e.alCas || e.alPro || e.alCam || e.alAzu || e.alCaf || e.alAnt ||
+    e.dig || e.act || e.doFoc || e.doGrl || e.ciclo || e.pant ||
+    e.slH || e.slCal ||
+    e.trTra || e.trPan || e.trEve || e.trIns || e.trLuz ||
+    e.hbMed || e.hbLec || e.hbBeb || e.hbEsc || e.hbAud);
+  return tieneTexto || tieneSel || tieneFrase;
+}
+
+function contarDiasReales() {
+  return Object.values(ST.all()).filter(d => tieneDatos(d)).length;
+}
+
+/* ─── LIMPIAR ─── */
+function limpiar() {
+  document.querySelectorAll('input[type=text],input[type=number],textarea').forEach(i => i.value = '');
+  document.querySelectorAll('input[type=checkbox]').forEach(c => c.checked = false);
+  ['dig','digT','act','ciclo','pant','slCal','esc1','esc2','escC'].forEach(radCl);
+  const sd = el('sub-dig'); if (sd) sd.classList.remove('on');
+  const aw = el('act-q-wrap'); if (aw) aw.classList.remove('on');
+  const vm = el('val-msg'); if (vm) vm.classList.remove('visible');
+}
+
+/* ─── LLENAR ─── */
+function llenar(e) {
+  if (!e) return;
+  valS('nav-fecha', e.fecha);
+  escS('esc1', e.ep1s); valS('ep1-n', e.ep1n);
+  escS('esc2', e.ep2s); valS('ep2-n', e.ep2n);
+  escS('escC', e.can);
+  chkS('tr-med',e.trMed); chkS('tr-dos',e.trDos);
+  chkS('tr-hor',e.trHor); valS('tr-cual',e.trCual);
+  // Expansión
+  chkS('em-est',e.emEst); chkS('em-ans',e.emAns); chkS('em-irr',e.emIrr);
+  chkS('em-ale',e.emAle); chkS('em-ent',e.emEnt); chkS('em-ene',e.emEne);
+  // Contención
+  chkS('em-tri',e.emTri); chkS('em-mie',e.emMie); chkS('em-cal',e.emCal);
+  chkS('em-gra',e.emGra); chkS('em-con',e.emCon); chkS('em-bie',e.emBie);
+  valS('em-pred',e.emPred); valS('em-nota',e.emNota);
+  chkS('al-cas',e.alCas); chkS('al-pro',e.alPro);
+  chkS('al-cam',e.alCam); chkS('al-azu',e.alAzu);
+  chkS('al-caf',e.alCaf); chkS('al-ant',e.alAnt);
+  radS('dig', e.dig);
+  const sd = el('sub-dig');
+  if (sd) { if (e.dig === 'si') { sd.classList.add('on'); radS('digT', e.digT); } else sd.classList.remove('on'); }
+  radS('act', e.act);
+  const aw = el('act-q-wrap');
+  if (aw) { if (e.act === 'si') aw.classList.add('on'); else aw.classList.remove('on'); }
+  valS('act-t', e.actT); valS('act-q', e.actQ);
+  chkS('do-foc',e.doFoc); chkS('do-grl',e.doGrl); valS('do-otr',e.doOtr);
+  radS('ciclo', e.ciclo); radS('pant', e.pant);
+  const slhEl = el('sl-h'); if (slhEl) slhEl.value = e.slH != null ? e.slH : '';
+  radS('slCal', e.slCal);
+  chkS('tr2-tra',e.trTra); chkS('tr2-pan',e.trPan);
+  chkS('tr2-eve',e.trEve); chkS('tr2-ins',e.trIns);
+  chkS('tr2-luz',e.trLuz); valS('tr2-otr',e.trOtr);
+  chkS('hb-med',e.hbMed); chkS('hb-lec',e.hbLec);
+  chkS('hb-beb',e.hbBeb); chkS('hb-esc',e.hbEsc);
+  chkS('hb-aud',e.hbAud); valS('hb-otr',e.hbOtr);
+  valS('pag-lib', e.pag);
+}
+
+/* ─── FRASE ─── */
+function renderFrase(dia) {
+  const z = el('frase-zona'); if (!z) return;
+  if (DIAS_USUARIO.has(dia)) {
+    const prev = (ST.get(dia)?.fraseU || '').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+    z.innerHTML = `<input type="text" class="frase-user" id="frase-u"
+      placeholder="Escribe tu propia reflexión para este día especial…"
+      value="${prev}">`;
+    const fu = el('frase-u');
+    if (fu) fu.addEventListener('input', programarAutoGuardado);
+  } else {
+    const f = FRASES[dia];
+    z.innerHTML = f ? `<p class="frase-txt">${f}</p>` : '';
+  }
+}
+
+/* ─── DÍA MÁXIMO PERMITIDO ─── */
+function diaMaximoPermitido() {
+  const todos = ST.all();
+  const diasGuardados = Object.values(todos).filter(d => tieneDatos(d)).length;
+  // Pueden ir al siguiente día solo si el actual está guardado
+  return diasGuardados + 1;
+}
+
+/* ─── NAVEGACIÓN ─── */
+function irADia(dia) {
+  cancelarAutoGuardado();
+  const maximo = diaMaximoPermitido();
+  if (dia > maximo) {
+    toast(`⚠ Primero guarda el día ${maximo} para continuar`);
+    dia = maximo;
+  }
+  diaActual = Math.max(1, Math.min(100, dia));
+  limpiar();
+  const e = ST.get(diaActual);
+  if (e) llenar(e); else valS('nav-fecha', hoy());
+  renderFrase(diaActual);
+  actualizarUI();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function navegarDia(delta) { irADia(diaActual + delta); }
+
+/* ─── GUARDAR + VALIDACIÓN ─── */
+function intentarSiguiente() {
+  const datos = recolectar();
+  const vm = el('val-msg');
+  if (!tieneDatos(datos)) {
+    if (vm) { vm.classList.add('visible'); vm.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    return;
+  }
+  if (vm) vm.classList.remove('visible');
+  const ok = ST.set(diaActual, datos);
+  if (!ok) return;
+  actualizarUI();
+  toast(`✦ Día ${diaActual} guardado`);
+  if (diaActual < 100) irADia(diaActual + 1);
+}
+function guardarSolo() {
+  const datos = recolectar();
+  if (ST.set(diaActual, datos)) {
+    actualizarUI();
+    toast(`✦ Día ${diaActual} guardado`);
+    if (_sbUser) sincronizarDatos();
+  }
+}
+function guardarYSiguiente() {
+  if (diaActual === 100) { guardarSolo(); return; }
+  intentarSiguiente();
+  if (_sbUser) sincronizarDatos();
+}
+function pedirLimpiar() {
+  if (confirm('¿Limpiar el formulario? Los datos ya guardados no se borran.')) {
+    limpiar(); valS('nav-fecha', hoy()); renderFrase(diaActual); toast('Formulario limpio');
+  }
+}
+
+/* ─── AUTO-GUARDADO — DESACTIVADO, solo botón manual ─── */
+function programarAutoGuardado() { /* desactivado */ }
+function cancelarAutoGuardado() { if (_autoTimer) { clearTimeout(_autoTimer); _autoTimer = null; } }
+function guardarAlCerrar() { cancelarAutoGuardado(); const d = recolectar(); if (tieneDatos(d)) ST.set(diaActual, d); }
+function conectarAutoGuardado() {
+  // Solo conectar fecha
+  const f = el('nav-fecha');
+  if (f) f.addEventListener('change', () => {
+    const fd = el('fecha-display'); const fv = valG('nav-fecha');
+    if (fd) fd.textContent = fv || hoy();
+    programarAutoGuardado();
+  });
+}
+
+/* ─── ACTUALIZAR UI ─── */
+function actualizarUI() {
+  const todos = ST.all();
+  const count = contarDiasReales();
+  const pct = Math.round((count / 100) * 100);
+  const bd = el('badge-dia'); if (bd) bd.textContent = `Día ${diaActual} · 100`;
+  const sd = el('sel-dia'); if (sd) sd.value = diaActual;
+  const ba = el('btn-ant'); if (ba) ba.disabled = diaActual <= 1;
+  const bs = el('btn-sig'); if (bs) bs.disabled = diaActual >= 100;
+  const baf = el('btn-ant-f'); if (baf) baf.disabled = diaActual <= 1;
+  const fd = el('fecha-display'); const fv = valG('nav-fecha');
+  if (fd) fd.textContent = fv || hoy();
+  const pf = el('prog-fill'); if (pf) pf.style.width = pct + '%';
+  const pl = el('prog-lbl'); if (pl) pl.textContent = `${count} / 100 días`;
+  const bg = el('btn-guardar');
+  if (bg) { if (diaActual === 100) { bg.textContent = 'Guardar día 100'; bg.onclick = guardarSolo; } else { bg.textContent = 'Guardar y Siguiente →'; bg.onclick = guardarYSiguiente; } }
+  const bm = el('btn-meta'); if (bm) { if (count >= 100) bm.classList.add('visible'); else bm.classList.remove('visible'); }
+  const mapa = el('mapa');
+  if (mapa) {
+    mapa.innerHTML = '';
+    for (let i = 1; i <= 100; i++) {
+      const d = document.createElement('div');
+      d.className = 'dia-pt' + (tieneDatos(todos[i]) ? ' done' : '') + (i === diaActual ? ' current' : '');
+      d.title = `Día ${i}`; d.onclick = () => irADia(i);
+      mapa.appendChild(d);
+    }
+  }
+}
+
+/* ─── PANEL SWITCHER ─── */
+function mostrarPanel(nombre) {
+  ['diario','dashboard'].forEach(n => {
+    const p = el('panel-' + n);
+    if (p) p.classList.toggle('activo', n === nombre);
+    const t = el('tab-' + n);
+    if (t) t.classList.toggle('activo', n === nombre);
+  });
+  const navDiario = el('hdr-nav-diario');
+  if (navDiario) navDiario.style.display = nombre === 'diario' ? '' : 'none';
+  if (nombre === 'dashboard') renderDashboard();
+  // Al volver al diario, recargar el día actual para que no quede en blanco
+  if (nombre === 'diario') {
+    const e = ST.get(diaActual);
+    limpiar();
+    if (e) llenar(e); else valS('nav-fecha', hoy());
+    renderFrase(diaActual);
+    actualizarUI();
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   DASHBOARD MENSUAL
+══════════════════════════════════════════════════════ */
+function getEntradasPeriodo() {
+  const todos = ST.all();
+  const idx = parseInt(el('dash-periodo')?.value || '0');
+  const rangos = [[1,30],[31,60],[61,100]];
+  const [ini, fin] = rangos[idx];
+  return Object.values(todos)
+    .filter(e => tieneDatos(e) && e.dia >= ini && e.dia <= fin)
+    .sort((a,b) => a.dia - b.dia);
+}
+
+function barraHTML(label, val, max, tipo = '') {
+  const pct = max > 0 ? Math.round((val / max) * 100) : 0;
+  return `<div class="barra-fila">
+    <span class="barra-label">${label}</span>
+    <div class="barra-track"><div class="barra-fill ${tipo}" style="width:${pct}%"></div></div>
+    <span class="barra-val">${val}</span>
+  </div>`;
+}
+
+function renderDashboard() {
+  const inner = el('dash-inner');
+
+  // Verificar si tiene al menos 30 días registrados
+  const totalDias = contarDiasReales();
+  if (totalDias < 30) {
+    const faltan = 30 - totalDias;
+    inner.innerHTML = `<div class="vacio" style="text-align:center;padding:2rem;">
+      <span class="vacio-icon">🦋</span>
+      <div style="font-family:var(--tf);font-size:1.1rem;color:var(--purple);margin-bottom:0.8rem;">
+        Tu dashboard se activa en el día 30
+      </div>
+      <div style="font-family:var(--bf);font-size:0.85rem;color:var(--muted);line-height:1.8;margin-bottom:1rem;">
+        Te faltan <strong style="color:var(--purple)">${faltan} días</strong> para desbloquear tu primer análisis.<br>
+        Cada registro cuenta. ¡Sigue adelante!
+      </div>
+      <div style="font-family:var(--bf);font-size:0.78rem;color:var(--purple-l);">
+        Llevas ${totalDias} de 30 días · ${Math.round(totalDias/30*100)}% completado
+      </div>
+    </div>`;
+    return;
+  }
+
+  const entradas = getEntradasPeriodo();
+  const n = entradas.length;
+
+  if (n === 0) {
+    inner.innerHTML = `<div class="vacio"><span class="vacio-icon">🦋</span>
+      Aún no hay datos para este período.<br>Registra días y vuelve aquí para ver tus patrones.</div>`;
+    return;
+  }
+
+  const avg = arr => arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : '—';
+  const pct = (x, t) => t ? Math.round(x/t*100) : 0;
+
+  // Stats básicas
+  const sleepArr = entradas.filter(e=>e.slH).map(e=>e.slH);
+  const avgSleep = avg(sleepArr);
+  const diasEpisodios = entradas.filter(e=>e.numEp>0);
+  const nc = diasEpisodios.length;
+  const diasActivos = entradas.filter(e=>e.act==='si').length;
+  const diasAnsiedad = entradas.filter(e=>e.emAns||e.emEst).length;
+
+  // ANÁLISIS CORRELACIONES AUTOMÁTICAS
+  const correlaciones = [];
+  if (nc > 0) {
+    const pantAltaCrisis = diasEpisodios.filter(e=>e.pant==='alta').length;
+    if (pantAltaCrisis > 0) correlaciones.push(`En el <strong>${pct(pantAltaCrisis,nc)}%</strong> de los días con episodios registraste <strong>alta exposición a pantallas</strong>.`);
+    const sleep6 = diasEpisodios.filter(e=>e.slH&&e.slH<6).length;
+    if (sleep6 > 0) correlaciones.push(`El <strong>${pct(sleep6,nc)}%</strong> de los días con episodios tuvo <strong>menos de 6 horas de sueño</strong>.`);
+    const combo = diasEpisodios.filter(e=>e.pant==='alta'&&e.slH&&e.slH<6).length;
+    if (combo > 0) correlaciones.push(`En el <strong>${pct(combo,nc)}%</strong> de los días con episodios coincidieron <em>pantallas altas y menos de 6h de sueño</em> a la vez. Esta combinación parece relevante para ti.`);
+    const aliR = diasEpisodios.filter(e=>e.alPro||e.alAzu).length;
+    if (aliR > 0) correlaciones.push(`El <strong>${pct(aliR,nc)}%</strong> de los días con episodios incluyó alimentación procesada o azúcar.`);
+    const estAns = diasEpisodios.filter(e=>e.emEst||e.emAns).length;
+    if (estAns > 0) correlaciones.push(`El <strong>${pct(estAns,nc)}%</strong> de los días con episodios registró estrés o ansiedad.`);
+    const bienDias = entradas.filter(e=>e.slH>=7&&e.numEp===0).length;
+    correlaciones.push(`Dormiste ≥7 horas sin episodios en <strong>${bienDias} días</strong>. Ese parece ser tu patrón de bienestar.`);
+  } else {
+    correlaciones.push(`No registraste episodios en este período. Eso es muy positivo. Tu promedio de sueño fue de <strong>${avgSleep}h</strong>.`);
+  }
+
+  // Datos emociones — Expansión
+  const emosExp = {
+    Estrés:        entradas.filter(e=>e.emEst).length,
+    Ansiedad:      entradas.filter(e=>e.emAns).length,
+    Irritabilidad: entradas.filter(e=>e.emIrr).length,
+    Alegría:       entradas.filter(e=>e.emAle).length,
+    Entusiasmo:    entradas.filter(e=>e.emEnt).length,
+    Energía:       entradas.filter(e=>e.emEne).length,
+  };
+  // Datos emociones — Contención
+  const emosCon = {
+    Tristeza:   entradas.filter(e=>e.emTri).length,
+    Miedo:      entradas.filter(e=>e.emMie).length,
+    Calma:      entradas.filter(e=>e.emCal).length,
+    Gratitud:   entradas.filter(e=>e.emGra).length,
+    Confianza:  entradas.filter(e=>e.emCon).length,
+    Bienestar:  entradas.filter(e=>e.emBie).length,
+  };
+  const maxEmo = Math.max(...Object.values(emosExp), ...Object.values(emosCon), 1);
+
+  // Datos alimentación
+  const ali = {
+    Casera: entradas.filter(e=>e.alCas).length,
+    Procesada: entradas.filter(e=>e.alPro).length,
+    Azúcar: entradas.filter(e=>e.alAzu).length,
+    Cafeína: entradas.filter(e=>e.alCaf).length,
+    Antojos: entradas.filter(e=>e.alAnt).length,
+  };
+  const maxAli = Math.max(...Object.values(ali), 1);
+
+  // Sueño timeline
+  const suenoTimeline = entradas.filter(e=>e.slH).map(e=>({dia:e.dia,h:e.slH}));
+  const maxH = Math.max(...suenoTimeline.map(s=>s.h), 8);
+  const suenoHTML = suenoTimeline.length === 0
+    ? '<p style="color:var(--muted);font-size:0.75rem;font-style:italic;">Sin datos de sueño aún.</p>'
+    : `<div class="sueno-timeline">
+        ${suenoTimeline.map(s => {
+          const htPct = Math.round((s.h / maxH) * 100);
+          const cls = s.h < 6 ? 'bajo' : s.h >= 8 ? 'alto' : '';
+          return `<div class="sueno-col">
+            <div class="sueno-bar ${cls}" style="height:${htPct}%" title="${s.h}h"></div>
+            <span class="sueno-lbl">D${s.dia}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;">
+        <span style="font-size:0.6rem;color:var(--muted);"><span style="display:inline-block;width:8px;height:8px;background:#C62828;margin-right:3px;"></span>&lt;6h</span>
+        <span style="font-size:0.6rem;color:var(--muted);"><span style="display:inline-block;width:8px;height:8px;background:var(--purple-l);margin-right:3px;"></span>6-8h</span>
+        <span style="font-size:0.6rem;color:var(--muted);"><span style="display:inline-block;width:8px;height:8px;background:var(--purple);margin-right:3px;"></span>≥8h</span>
+      </div>`;
+
+  // Pantallas vs episodios
+  const pantBCrisis = entradas.filter(e=>e.pant==='baja'&&e.numEp>0).length;
+  const pantMCrisis = entradas.filter(e=>e.pant==='media'&&e.numEp>0).length;
+  const pantACrisis = entradas.filter(e=>e.pant==='alta'&&e.numEp>0).length;
+  const pantB = entradas.filter(e=>e.pant==='baja').length;
+  const pantM = entradas.filter(e=>e.pant==='media').length;
+  const pantA = entradas.filter(e=>e.pant==='alta').length;
+
+  // Hábitos nocturnos
+  const habitos = {
+    Meditación: entradas.filter(e=>e.hbMed).length,
+    Lectura: entradas.filter(e=>e.hbLec).length,
+    'Bebida Nat.': entradas.filter(e=>e.hbBeb).length,
+    'Escáner corp.': entradas.filter(e=>e.hbEsc).length,
+    'Audio/Sonido': entradas.filter(e=>e.hbAud).length,
+  };
+  const maxHab = Math.max(...Object.values(habitos), 1);
+
+  inner.innerHTML = `
+    <!-- Stats -->
+    <div class="stats-fila">
+      <div class="stat-card"><div class="stat-num">${n}</div><div class="stat-lbl">Días registrados</div></div>
+      <div class="stat-card"><div class="stat-num">${avgSleep}h</div><div class="stat-lbl">Sueño promedio</div></div>
+      <div class="stat-card"><div class="stat-num">${nc}</div><div class="stat-lbl">Días con episodios</div></div>
+      <div class="stat-card"><div class="stat-num">${diasActivos}</div><div class="stat-lbl">Días activos</div></div>
+    </div>
+
+    <!-- Correlaciones -->
+    <div class="correlacion-box">
+      <div class="correlacion-titulo">🔍 Análisis de correlaciones</div>
+      ${correlaciones.map(c=>`<div class="hallazgo-dash">${c}</div>`).join('')}
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+
+      <div class="chart-card">
+        <div class="chart-title">♥ Emociones — frecuencia</div>
+        <div style="font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--purple-m);padding:4px 0 2px;border-bottom:1px solid var(--line);margin-bottom:4px;">Expansión</div>
+        ${Object.entries(emosExp).map(([k,v])=>barraHTML(k,v,maxEmo)).join('')}
+        <div style="font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:6px 0 2px;border-bottom:1px solid var(--line);margin-bottom:4px;">Contención</div>
+        ${Object.entries(emosCon).map(([k,v])=>barraHTML(k,v,maxEmo,'dark')).join('')}
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">◦ Alimentación</div>
+        ${Object.entries(ali).map(([k,v])=>barraHTML(k,v,maxAli,k==='Casera'?'dark':k==='Procesada'||k==='Azúcar'?'accent':'')).join('')}
+      </div>
+
+      <div class="chart-card full">
+        <div class="chart-title">◌ Horas de sueño — tendencia del período</div>
+        ${suenoHTML}
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">📱 Pantallas vs episodios</div>
+        <div class="pantallas-fila">
+          <div class="pant-bloque">
+            <div class="pant-num">${pantB}</div>
+            <div class="pant-sub">Baja</div>
+            ${pantBCrisis>0?`<div class="pant-crisis">${pantBCrisis} con episodio</div>`:''}
+          </div>
+          <div class="pant-bloque">
+            <div class="pant-num">${pantM}</div>
+            <div class="pant-sub">Media</div>
+            ${pantMCrisis>0?`<div class="pant-crisis">${pantMCrisis} con episodio</div>`:''}
+          </div>
+          <div class="pant-bloque" style="border-color:var(--purple-l);">
+            <div class="pant-num" style="color:#C62828;">${pantA}</div>
+            <div class="pant-sub">Alta</div>
+            ${pantACrisis>0?`<div class="pant-crisis">${pantACrisis} con episodio</div>`:''}
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          ${barraHTML('Pantallas baja', pantB, n)}
+          ${barraHTML('Pantallas media', pantM, n, 'accent')}
+          ${barraHTML('Pantallas alta', pantA, n, 'dark')}
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">✦ Hábitos nocturnos</div>
+        ${Object.entries(habitos).map(([k,v])=>barraHTML(k,v,maxHab)).join('')}
+      </div>
+
+    </div>
+  `;
+}
+
+/* ─── ANÁLISIS METAMORFOSIS (modal día 100) ─── */
+function abrirAnalisis() {
+  const entradas = Object.values(ST.all()).filter(e=>tieneDatos(e));
+  const n = entradas.length;
+  const bodyEl = el('modal-body'); if (!bodyEl) return;
+  if (n < 5) { bodyEl.innerHTML='<div class="hallazgo">Necesitas más días registrados para el análisis completo.</div>'; el('modal').classList.add('open'); return; }
+  const pct = (x,t) => t?Math.round(x/t*100):0;
+  const avg = arr => arr.length?(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1):'—';
+  const crisis = entradas.filter(e=>e.numEp>0);
+  const nc = crisis.length;
+  const sleepArr = entradas.filter(e=>e.slH).map(e=>e.slH);
+  const hallazgos = [];
+  if (nc > 0) {
+    const pantAlta = crisis.filter(e=>e.pant==='alta').length;
+    hallazgos.push(`Registraste <strong>${nc} días con episodios</strong> de ${n} totales. En el <strong>${pct(pantAlta,nc)}%</strong> de esos días la exposición a pantallas fue alta.`);
+    const sleep6 = crisis.filter(e=>e.slH&&e.slH<6).length;
+    hallazgos.push(`El <strong>${pct(sleep6,nc)}%</strong> de los días con episodios tuvo <strong>menos de 6 horas de sueño</strong>.`);
+    const combo = crisis.filter(e=>e.pant==='alta'&&e.slH&&e.slH<6).length;
+    if (combo>0) hallazgos.push(`En el <strong>${pct(combo,nc)}%</strong> de los días con episodios coincidieron <em>pantallas altas y menos de 6h de sueño</em> a la vez.`);
+    hallazgos.push(`El <strong>${pct(crisis.filter(e=>e.alPro||e.alAzu).length,nc)}%</strong> de los días con episodios incluyó alimentación procesada o azúcar.`);
+    hallazgos.push(`El <strong>${pct(crisis.filter(e=>e.emEst||e.emAns).length,nc)}%</strong> de los días con episodios registró estrés o ansiedad.`);
+  } else { hallazgos.push('No registraste episodios en los 100 días. ¡Eso es extraordinario!'); }
+  const bienDias = entradas.filter(e=>e.slH>=7&&e.numEp===0).length;
+  hallazgos.push(`Dormiste ≥7h sin episodios en <strong>${bienDias} de ${n} días</strong>.`);
+  const activos = entradas.filter(e=>e.act==='si').length;
+  hallazgos.push(`Estuviste activa físicamente en <strong>${activos} días</strong> (${pct(activos,n)}%). Promedio de sueño: <strong>${avg(sleepArr)}h</strong>.`);
+  const m1=entradas.filter(e=>e.dia<=30&&e.slH).map(e=>e.slH);
+  const m3=entradas.filter(e=>e.dia>60&&e.slH).map(e=>e.slH);
+  if (m1.length&&m3.length) { const a1=parseFloat(avg(m1)),a3=parseFloat(avg(m3)); const t=a3>a1+0.2?'mejoró':a3<a1-0.2?'disminuyó':'se mantuvo estable'; hallazgos.push(`Tu sueño <strong>${t}</strong>: ${a1.toFixed(1)}h promedio (días 1-30) → ${a3.toFixed(1)}h (días 61+).`); }
+  bodyEl.innerHTML = hallazgos.map(h=>`<div class="hallazgo">${h}</div>`).join('') +
+    `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+     font-family:var(--tf);font-style:italic;font-size:0.85rem;color:var(--purple);text-align:center;">
+     "Hoy sé que no se trata de vencer nada, sino de habitarlo todo."</div>`;
+  el('modal').classList.add('open');
+}
+function cerrarModal() { const m=el('modal'); if(m) m.classList.remove('open'); }
+function cerrarFondo(e) { if(e.target===el('modal')) cerrarModal(); }
+
+/* ─── EXPORT ─── */
+function exportJSON() {
+  try {
+    const b=new Blob([JSON.stringify(ST.all(),null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+    a.download=`mi-viaje-capullo.json`; a.click(); toast('Exportando tus datos…');
+  } catch(e) { toastError('No se pudo exportar. Intenta de nuevo.'); }
+}
+
+/* ─── TOAST ─── */
+let tT;
+function toast(msg) {
+  const t=el('toast'); if(!t) return;
+  t.textContent=msg; t.style.background=''; t.style.opacity='';
+  t.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove('show'),2600);
+}
+function toastError(msg) {
+  const t=el('toast'); if(!t) return;
+  t.textContent='⚠ '+msg; t.style.background='#8B0000'; t.style.opacity='1';
+  t.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>{t.classList.remove('show');t.style.background='';},6000);
+}
+
+/* ─── HOY (zona horaria del usuario) ─── */
+function obtenerTimezone() {
+  try {
+    const uid = obtenerUsuarioId();
+    const intro = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
+    return intro.timezone || 'America/Bogota';
+  } catch { return 'America/Bogota'; }
+}
+function hoy() {
+  const tz = obtenerTimezone();
+  const ahora = new Date();
+  const local = new Date(ahora.toLocaleString('en-US', { timeZone: tz }));
+  const y = local.getFullYear();
+  const m = String(local.getMonth()+1).padStart(2,'0');
+  const d = String(local.getDate()).padStart(2,'0');
+  return y + '-' + m + '-' + d;
+}
+
+/* ─── PORTADA → APP ─── */
+function iniciarApp() {
+  el('pantalla-portada').style.display = 'none';
+  el('app').style.display = 'block';
+  _initJournal();
+}
+
+/* ─── INIT INTERNO ─── */
+function _initJournal() {
+  crearEscala('esc-ep1','esc1');
+  crearEscala('esc-ep2','esc2');
+  crearEscala('esc-can','escC');
+  const sd = el('sel-dia');
+  if (sd) { for(let i=1;i<=100;i++){const o=document.createElement('option');o.value=i;o.textContent=`Día ${i}`;sd.appendChild(o);} }
+  conectarAutoGuardado();
+  window.addEventListener('beforeunload', guardarAlCerrar);
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) guardarAlCerrar(); });
+  // Ir al primer día sin datos reales
+  const todos = ST.all();
+  let inicio = 1;
+  for (let i=1;i<=100;i++) { if (!tieneDatos(todos[i])) { inicio=i; break; } if(i===100) inicio=100; }
+  irADia(inicio);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Ocultar todo mientras verificamos sesión
+  document.getElementById('pantalla-portada').style.display = 'none';
+  document.getElementById('pantalla-intro').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pantalla-login').style.display = 'none';
+
+  // Verificar sesión Supabase
+  const user = await checkSession();
+
+  if (user) {
+    // Tiene sesión — descargar datos
+    await descargarDatos();
+    // Verificar si ya completó el intro (tiene nombre o datos)
+    const uid = _sbUser?.id || obtenerUsuarioId();
+    const intro = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
+    const nombre = localStorage.getItem('capullo_nombre_' + uid) || '';
+    const tieneIntro = nombre || intro.tipo || intro.p1;
+
+    if (tieneIntro) {
+      // Usuario conocido — ir directo al diario
+      document.getElementById('pantalla-portada').style.display = 'none';
+      document.getElementById('pantalla-intro').style.display = 'none';
+      document.getElementById('pantalla-login').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      iniciarApp();
+    } else {
+      // Usuario nuevo — mostrar portada para comenzar el viaje
+      document.getElementById('pantalla-login').style.display = 'none';
+      document.getElementById('pantalla-portada').style.display = 'flex';
+    }
+  } else {
+    // Sin sesión — mostrar login
+    mostrarLogin();
+  }
+});
+</script>
+
+<script>
+function irAIntro() {
+  document.getElementById('pantalla-portada').style.display = 'none';
+  document.getElementById('pantalla-intro').style.display = 'block';
+  introActualizar();
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('SW listo'))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+let _deferredInstall = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  _deferredInstall = e;
+  if (!localStorage.getItem('pwa_instalado')) {
+    setTimeout(() => {
+      const b = document.getElementById('pwa-banner');
+      if (b) b.classList.add('visible');
+    }, 3000);
+  }
+});
+window.addEventListener('appinstalled', () => {
+  localStorage.setItem('pwa_instalado', '1');
+  const b = document.getElementById('pwa-banner');
+  if (b) b.classList.remove('visible');
+});
+function instalarApp() {
+  if (!_deferredInstall) return;
+  _deferredInstall.prompt();
+  _deferredInstall.userChoice.then(() => {
+    _deferredInstall = null;
+    const b = document.getElementById('pwa-banner');
+    if (b) b.classList.remove('visible');
+    localStorage.setItem('pwa_instalado', '1');
+  });
+}
+function cerrarBanner() {
+  const b = document.getElementById('pwa-banner');
+  if (b) b.classList.remove('visible');
+  localStorage.setItem('pwa_banner_cerrado', '1');
+}
+
+// ── MI PERFIL ─────────────────────────────────────────────────
+function cargarPerfil() {
+  const uid = obtenerUsuarioId();
+  const introData = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
+  const nombreGuardado = localStorage.getItem('capullo_nombre_' + uid) || '';
+  const nombreCambiado = localStorage.getItem('capullo_nombre_locked_' + uid) === '1';
+
+  // Nombre — mostrar solo una vez
+  const display = document.getElementById('perfil-nombre-display');
+  const editZone = document.getElementById('perfil-nombre-edit-zone');
+
+  if (!nombreCambiado) {
+    // Aún no guardado — mostrar input
+    display.textContent = '';
+    editZone.innerHTML = `
+      <div style="display:flex;gap:8px;justify-content:center;max-width:280px;margin:0 auto;">
+        <input id="perfil-nombre-input" type="text" placeholder="Una frase que acompaña tu journal"
+          value="${nombreGuardado}"
+          style="flex:1;font-family:var(--tf);font-size:0.88rem;border:none;
+          border-bottom:2px solid var(--purple-l);background:transparent;
+          padding:6px 4px;outline:none;text-align:center;color:var(--purple);">
+        <button onclick="guardarNombre()" style="
+          font-family:var(--bf);font-size:0.78rem;
+          background:var(--purple);color:#fff;border:none;
+          padding:6px 14px;cursor:pointer;">Guardar</button>
+      </div>`;
+  } else {
+    // Ya guardado — mostrar solo en display, editZone vacío
+    display.textContent = nombreGuardado;
+    editZone.innerHTML = '';
+  }
+
+  // Datos iniciales
+  const campos = [
+    ['tipo','Tipo de epilepsia'],['edadCrisis','Edad de inicio'],
+    ['tiempo','Tiempo con epilepsia'],['control','Control actual'],
+    ['desencadenantes','Desencadenantes'],
+    ['actividad','Actividad física'],['pasatiempos','Pasatiempos'],
+    ['habitos','Hábitos importantes']
+  ];
+  const datosEl = document.getElementById('perfil-datos-inicio');
+  let datosHtml = '';
+
+  // Medicamentos — parsear como array estructurado
+  try {
+    const meds = JSON.parse(introData.medicamentos || '[]');
+    if (meds.length > 0) {
+      datosHtml += `<div style="margin-bottom:8px;"><strong>Medicamentos:</strong><br>`;
+      meds.forEach(m => {
+        datosHtml += `<div style="margin-left:12px;margin-top:3px;">• ${m.nombre}${m.dosis ? ' — ' + m.dosis : ''}${m.freq ? ' · ' + m.freq : ''}</div>`;
+      });
+      datosHtml += `</div>`;
+    }
+  } catch { }
+
+  campos.forEach(([k, label]) => {
+    const val = introData[k];
+    if (val) datosHtml += `<div style="margin-bottom:6px;"><strong>${label}:</strong> ${val}</div>`;
+  });
+  datosEl.innerHTML = datosHtml || '<em style="color:var(--muted)">No completado aún.</em>';
+
+  // Preguntas
+  const preguntas = [
+    ['p1','¿Qué crees que suele provocar tus episodios?'],
+    ['p2','¿Tu cuerpo te da alguna señal antes de un episodio?'],
+    ['p3','Después de un episodio, ¿qué suele necesitar tu cuerpo?'],
+    ['p4','¿Qué te ayuda a estar en equilibrio?'],
+    ['p5','¿Ha cambiado la forma en que te ves?'],
+    ['p6','¿Qué quisieras entender mejor?']
+  ];
+  const pregEl = document.getElementById('perfil-preguntas');
+  let pregHtml = '';
+  preguntas.forEach(([k, label]) => {
+    const val = introData[k];
+    if (val) pregHtml += `<div style="margin-bottom:10px;"><strong>${label}</strong><br><span style="color:var(--muted)">${val}</span></div>`;
+  });
+  pregEl.innerHTML = pregHtml || '<em style="color:var(--muted)">No completado aún. Ve a Mi Perfil para responder.</em>';
+}
+
+function guardarNombre() {
+  const uid = obtenerUsuarioId();
+  const input = document.getElementById('perfil-nombre-input');
+  const nombre = (input?.value || '').trim();
+  if (!nombre) return;
+  localStorage.setItem('capullo_nombre_' + uid, nombre);
+  localStorage.setItem('capullo_nombre_locked_' + uid, '1');
+  cargarPerfil();
+}
+
+function verIntroDesdePerfil() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pantalla-intro').style.display = 'block';
+  introStepActual = 1;
+  introActualizar();
+}
+
+// Update mostrarPanel to include perfil
+const _origMostrarPanel = mostrarPanel;
+mostrarPanel = function(panel) {
+  // Primero ocultar perfil siempre
+  const pp = document.getElementById('panel-perfil');
+  if (pp) pp.style.display = 'none';
+
+  if (panel === 'perfil') {
+    // Ocultar diario y dashboard
+    ['diario','dashboard'].forEach(p => {
+      const panelEl = document.getElementById('panel-' + p);
+      if (panelEl) panelEl.style.display = 'none';
+    });
+    // Ocultar nav del diario
+    const navDiario = el('hdr-nav-diario');
+    if (navDiario) navDiario.style.display = 'none';
+    // Mostrar perfil y cargar datos
+    if (pp) pp.style.display = 'block';
+    cargarPerfil();
+  } else {
+    // Restaurar paneles normales
+    ['diario','dashboard'].forEach(p => {
+      const panelEl = document.getElementById('panel-' + p);
+      if (panelEl) panelEl.style.display = '';
+    });
+    _origMostrarPanel(panel);
+  }
+};
+
+
+// ════════════════════════════════════════════════════════
+// SUPABASE AUTH & SYNC
+// ════════════════════════════════════════════════════════
+let _loginMode = 'registro';
+
+function loginTab(mode) {
+  _loginMode = mode;
+  const esReg = mode === 'registro';
+  document.getElementById('login-tab-reg').style.background =
+    esReg ? 'rgba(74,20,140,0.6)' : 'transparent';
+  document.getElementById('login-tab-reg').style.color =
+    esReg ? '#F5E6C8' : 'rgba(237,224,255,0.6)';
+  document.getElementById('login-tab-reg').style.fontWeight =
+    esReg ? 'bold' : 'normal';
+  document.getElementById('login-tab-ing').style.background =
+    !esReg ? 'rgba(74,20,140,0.6)' : 'transparent';
+  document.getElementById('login-tab-ing').style.color =
+    !esReg ? '#F5E6C8' : 'rgba(237,224,255,0.6)';
+  document.getElementById('login-tab-ing').style.fontWeight =
+    !esReg ? 'bold' : 'normal';
+
+  const nombreCampo = document.getElementById('login-nombre-campo');
+  if (nombreCampo) nombreCampo.style.display = esReg ? 'block' : 'none';
+
+  const btn = document.getElementById('login-btn');
+  if (btn) btn.textContent = esReg ? 'Crear mi cuenta' : 'Ingresar';
+
+  document.getElementById('login-msg').textContent = '';
+
+  // Ocultar botón de reenvío al cambiar de tab
+  const reenviarZona = document.getElementById('login-reenviar-zona');
+  if (reenviarZona) reenviarZona.style.display = 'none';
+}
+
+async function loginAccion() {
+  const email = document.getElementById('login-email')?.value?.trim();
+  const pass  = document.getElementById('login-pass')?.value;
+  const msg   = document.getElementById('login-msg');
+  const btn   = document.getElementById('login-btn');
+
+  if (!email || !pass) {
+    msg.textContent = 'Por favor completa todos los campos.';
+    return;
+  }
+  if (pass.length < 6) {
+    msg.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+    return;
+  }
+
+  btn.textContent = 'Un momento...';
+  btn.disabled = true;
+  msg.textContent = '';
+
+  try {
+    if (_loginMode === 'registro') {
+      const nombre = document.getElementById('login-nombre')?.value?.trim() || '';
+
+      const { data, error } = await _sb.auth.signUp({
+        email, password: pass,
+        options: { data: { nombre } }
+      });
+      if (error) throw error;
+
+      if (data.session && data.user) {
+        // ✅ Sesión inmediata — confirmación de email desactivada en Supabase
+        _sbUser = data.user;
+
+        // Guardar nombre usando el ID real de Supabase
+        if (nombre) {
+          localStorage.setItem('capullo_nombre_' + data.user.id, nombre);
+          localStorage.setItem('capullo_nombre_locked_' + data.user.id, '1');
+        }
+
+        msg.style.color = '#A8E8A8';
+        msg.textContent = '¡Cuenta creada! Entrando...';
+        setTimeout(() => {
+          // Ir directo a portada para comenzar el viaje
+          document.getElementById('pantalla-login').style.display = 'none';
+          document.getElementById('pantalla-portada').style.display = 'flex';
+          document.getElementById('pantalla-intro').style.display = 'none';
+          document.getElementById('app').style.display = 'none';
+        }, 1000);
+
+      } else if (data.user && !data.session) {
+        // ⚠️ Supabase requiere confirmación de email
+        // Guardar nombre pendiente para cuando confirme
+        if (nombre) {
+          localStorage.setItem('capullo_nombre_pending_' + email, nombre);
+        }
+        msg.style.color = '#F5C47A';
+        msg.textContent = '✉ Revisa tu correo ' + email + ' y confirma tu cuenta para entrar.';
+        btn.textContent = 'Crear mi cuenta';
+        btn.disabled = false;
+
+        // Mostrar botón de reenvío
+        const reenviarZona = document.getElementById('login-reenviar-zona');
+        if (reenviarZona) {
+          reenviarZona.style.display = 'block';
+          reenviarZona.dataset.email = email;
+        }
+
+      } else {
+        // Estado inesperado
+        throw new Error('No se pudo crear la cuenta. Intenta de nuevo.');
+      }
+
+    } else {
+      // LOGIN
+      const { data, error } = await _sb.auth.signInWithPassword({ email, password: pass });
+      if (error) throw error;
+
+      // Si hay nombre pendiente de cuando se registró, guardarlo con el ID real
+      if (data.user) {
+        const nombrePendiente = localStorage.getItem('capullo_nombre_pending_' + email);
+        if (nombrePendiente) {
+          localStorage.setItem('capullo_nombre_' + data.user.id, nombrePendiente);
+          localStorage.setItem('capullo_nombre_locked_' + data.user.id, '1');
+          localStorage.removeItem('capullo_nombre_pending_' + email);
+        }
+      }
+      // onAuthStateChange maneja el resto
+    }
+  } catch(e) {
+    msg.style.color = '#F5C47A';
+    const errMsg = e.message || '';
+    if (errMsg.includes('Failed to fetch') || errMsg.includes('fetch') || errMsg.includes('NetworkError')) {
+      msg.textContent = 'Sin conexión. Verifica tu internet e intenta de nuevo.';
+    } else if (errMsg.includes('already registered') || errMsg.includes('User already registered')) {
+      msg.textContent = 'Este correo ya tiene cuenta. Usa "Ingresar".';
+    } else if (errMsg.includes('Invalid login credentials') || errMsg.includes('Invalid login')) {
+      msg.textContent = 'Correo o contraseña incorrectos.';
+    } else if (errMsg.includes('Email not confirmed')) {
+      msg.textContent = 'Confirma tu correo antes de ingresar. Revisa tu bandeja de entrada.';
+    } else if (errMsg.includes('signup_disabled') || errMsg.includes('Signups not allowed')) {
+      msg.textContent = 'El registro está temporalmente desactivado. Intenta más tarde.';
+    } else {
+      msg.textContent = 'Error: ' + errMsg;
+    }
+    btn.textContent = _loginMode === 'registro' ? 'Crear mi cuenta' : 'Ingresar';
+    btn.disabled = false;
+  }
+}
+
+function continuarSinCuenta() {
+  ocultarLogin();
+  const sk = getSK();
+  try {
+    const datos = JSON.parse(localStorage.getItem(sk) || '{}');
+    const tieneDias = Object.values(datos).some(d => d && typeof d === 'object');
+    if (tieneDias) {
+      document.getElementById('pantalla-portada').style.display = 'none';
+      document.getElementById('pantalla-intro').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      iniciarApp();
+    } else {
+      document.getElementById('pantalla-portada').style.display = 'flex';
+      document.getElementById('pantalla-intro').style.display = 'none';
+      document.getElementById('app').style.display = 'none';
+    }
+  } catch {
+    document.getElementById('pantalla-portada').style.display = 'flex';
+  }
+}
+
+function mostrarLogin() {
+  document.getElementById('pantalla-login').style.display = 'block';
+  document.getElementById('pantalla-portada').style.display = 'none';
+  document.getElementById('pantalla-intro').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+}
+
+function ocultarLogin() {
+  document.getElementById('pantalla-login').style.display = 'none';
+}
+
+// ── SYNC: subir datos locales a Supabase ──────────────────────
+async function sincronizarDatos() {
+  if (!_sbUser) return;
+
+  try {
+    const sk       = getSK();
+    const introKey = 'capullo_intro_'  + _sbUser.id;
+    const nombreKey= 'capullo_nombre_' + _sbUser.id;
+
+    const datos  = JSON.parse(localStorage.getItem(sk)       || '{}');
+    const intro  = JSON.parse(localStorage.getItem(introKey) || '{}');
+    const nombre = localStorage.getItem(nombreKey) || '';
+
+    const payload = {
+      user_id:    _sbUser.id,
+      diario:     datos,
+      intro:      intro,
+      nombre:     nombre,
+      updated_at: new Date().toISOString()
+    };
+
+    const { error } = await _sb
+      .from('journal_datos')
+      .upsert(payload, { onConflict: 'user_id' });
+
+    if (error) {
+      console.log('Sync error:', error.message);
+      mostrarToast('⚠ Error al guardar en la nube');
+    } else {
+      console.log('Datos sincronizados OK');
+      mostrarToast('✓ Datos guardados en la nube');
+    }
+  } catch(e) {
+    console.log('Sync failed:', e);
+  }
+}
+
+// ── SYNC: descargar datos desde Supabase ──────────────────────
+async function descargarDatos() {
+  if (!_sbUser) return;
+
+  try {
+    const { data, error } = await _sb
+      .from('journal_datos')
+      .select('*')
+      .eq('user_id', _sbUser.id)
+      .single();
+
+    if (error || !data) {
+      console.log('No hay datos en la nube aún');
+      return;
+    }
+
+    // Guardar siempre con el ID de Supabase como clave
+    const sk       = 'capullo_v5_'    + _sbUser.id;
+    const introKey = 'capullo_intro_'  + _sbUser.id;
+    const nombreKey= 'capullo_nombre_' + _sbUser.id;
+
+    if (data.diario && Object.keys(data.diario).length > 0) {
+      localStorage.setItem(sk, JSON.stringify(data.diario));
+    }
+    if (data.intro && Object.keys(data.intro).length > 0) {
+      localStorage.setItem(introKey, JSON.stringify(data.intro));
+    }
+    if (data.nombre) {
+      localStorage.setItem(nombreKey, data.nombre);
+      localStorage.setItem('capullo_nombre_locked_' + _sbUser.id, '1');
+    }
+
+    console.log('Datos descargados OK');
+  } catch(e) {
+    console.log('Download failed:', e);
+  }
+}
+
+// ── Toast notification ────────────────────────────────────────
+function mostrarToast(msg) {
+  let toast = document.getElementById('sb-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'sb-toast';
+    toast.style.cssText = `
+      position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+      background:rgba(74,20,140,0.95);color:#F5E6C8;
+      font-family:'Source Serif 4',serif;font-size:0.8rem;
+      padding:10px 20px;border-radius:20px;z-index:9999;
+      opacity:0;transition:all 0.3s;white-space:nowrap;
+      border:1px solid rgba(232,137,26,0.4);
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2500);
+}
+
+// ── Mostrar/ocultar contraseña ─────────────────────────────
+function togglePassword() {
+  const input = document.getElementById('login-pass');
+  const btn = document.getElementById('btn-eye');
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+// ── Reenviar correo de confirmación ───────────────────────
+async function reenviarConfirmacion() {
+  const zona = document.getElementById('login-reenviar-zona');
+  const email = zona?.dataset?.email || document.getElementById('login-email')?.value?.trim();
+  const msg = document.getElementById('login-msg');
+  if (!email) return;
+
+  try {
+    const { error } = await _sb.auth.resend({ type: 'signup', email });
+    if (error) throw error;
+    msg.style.color = '#A8E8A8';
+    msg.textContent = '✉ Correo reenviado a ' + email + '. Revisa tu bandeja de entrada y spam.';
+  } catch(e) {
+    msg.style.color = '#F5C47A';
+    msg.textContent = 'No se pudo reenviar. Intenta de nuevo en un momento.';
+  }
+}
+async function cerrarSesion() {
+  try { await _sb.auth.signOut(); } catch(e) {}
+  _sbUser = null;
+  // Mostrar login directamente sin recargar
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pantalla-portada').style.display = 'none';
+  document.getElementById('pantalla-intro').style.display = 'none';
+  document.getElementById('pantalla-login').style.display = 'block';
+  loginTab('ingreso');
+  // Limpiar caché en segundo plano
+  try {
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      for (let k of keys) await caches.delete(k);
+    }
+  } catch(e) {}
+}
+
+// ── Auto-sync cada vez que se guarda un día ───────────────────
+// Hook into existing guardarDia function
+const _origGuardar = typeof guardarDia === 'function' ? guardarDia : null;
+if (_origGuardar) {
+  guardarDia = async function() {
+    _origGuardar();
+    if (_sbUser) await sincronizarDatos();
+  };
+}
+
+</script>
+</body>
+</html>
