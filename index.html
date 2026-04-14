@@ -759,15 +759,15 @@ const _sb = supabase.createClient(_SB_URL, _SB_KEY);
 let _sbUser = null;
 
 // On auth state change
-_sb.auth.onAuthStateChange((event, session) => {
+_sb.auth.onAuthStateChange(async (event, session) => {
   _sbUser = session?.user || null;
   if (event === 'SIGNED_IN') {
-    ocultarLogin();
-    // Navegar a portada para que el usuario pueda comenzar
+    await descargarDatos();
     document.getElementById('pantalla-login').style.display = 'none';
-    document.getElementById('pantalla-portada').style.display = 'flex';
+    document.getElementById('pantalla-portada').style.display = 'none';
     document.getElementById('pantalla-intro').style.display = 'none';
-    document.getElementById('app').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    if (typeof _initJournal === 'function') _initJournal();
     sincronizarDatos();
   }
   if (event === 'SIGNED_OUT') {
@@ -1965,9 +1965,22 @@ function renderFrase(dia) {
   }
 }
 
+/* ─── DÍA MÁXIMO PERMITIDO ─── */
+function diaMaximoPermitido() {
+  const todos = ST.all();
+  const diasGuardados = Object.values(todos).filter(d => tieneDatos(d)).length;
+  // Pueden ir al siguiente día solo si el actual está guardado
+  return diasGuardados + 1;
+}
+
 /* ─── NAVEGACIÓN ─── */
 function irADia(dia) {
   cancelarAutoGuardado();
+  const maximo = diaMaximoPermitido();
+  if (dia > maximo) {
+    toast(`⚠ Primero guarda el día ${maximo} para continuar`);
+    dia = maximo;
+  }
   diaActual = Math.max(1, Math.min(100, dia));
   limpiar();
   const e = ST.get(diaActual);
@@ -2007,26 +2020,12 @@ function pedirLimpiar() {
   }
 }
 
-/* ─── AUTO-GUARDADO ─── */
-function programarAutoGuardado() {
-  cancelarAutoGuardado();
-  _autoTimer = setTimeout(() => {
-    const datos = recolectar();
-    if (tieneDatos(datos)) {
-      if (ST.set(diaActual, datos)) {
-        actualizarUI();
-        const t = el('toast');
-        if (t) { t.textContent = '✓ Guardado automáticamente'; t.style.opacity = '0.7'; t.classList.add('show'); clearTimeout(window._tT); window._tT = setTimeout(() => { t.classList.remove('show'); t.style.opacity = ''; }, 1800); }
-      }
-    }
-  }, 2000);
-}
+/* ─── AUTO-GUARDADO — DESACTIVADO, solo botón manual ─── */
+function programarAutoGuardado() { /* desactivado */ }
 function cancelarAutoGuardado() { if (_autoTimer) { clearTimeout(_autoTimer); _autoTimer = null; } }
 function guardarAlCerrar() { cancelarAutoGuardado(); const d = recolectar(); if (tieneDatos(d)) ST.set(diaActual, d); }
 function conectarAutoGuardado() {
-  document.querySelectorAll('input[type=text],input[type=number],textarea').forEach(i => i.addEventListener('input', programarAutoGuardado));
-  document.querySelectorAll('input[type=checkbox]').forEach(c => c.addEventListener('change', programarAutoGuardado));
-  document.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener('change', programarAutoGuardado));
+  // Solo conectar fecha
   const f = el('nav-fecha');
   if (f) f.addEventListener('change', () => {
     const fd = el('fecha-display'); const fv = valG('nav-fecha');
@@ -2393,22 +2392,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = await checkSession();
 
   if (user) {
-    // Tiene sesión — descargar datos y entrar
+    // Tiene sesión — descargar datos y entrar directo al diario
     await descargarDatos();
-    // getSK() ahora usa _sbUser.id correctamente
-    const sk = getSK();
-    try {
-      const datos = JSON.parse(localStorage.getItem(sk) || '{}');
-      const tieneDias = Object.values(datos).some(d => d && typeof d === 'object');
-      if (tieneDias) {
-        document.getElementById('app').style.display = 'block';
-        iniciarApp();
-      } else {
-        document.getElementById('pantalla-portada').style.display = 'flex';
-      }
-    } catch {
-      document.getElementById('pantalla-portada').style.display = 'flex';
-    }
+    document.getElementById('pantalla-portada').style.display = 'none';
+    document.getElementById('pantalla-intro').style.display = 'none';
+    document.getElementById('pantalla-login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    iniciarApp();
   } else {
     // Sin sesión — mostrar login
     mostrarLogin();
@@ -2855,20 +2845,14 @@ async function reenviarConfirmacion() {
   }
 }
 async function cerrarSesion() {
-  try {
-    await _sb.auth.signOut();
-  } catch(e) {
-    console.log('signOut error:', e);
-  }
+  try { await _sb.auth.signOut(); } catch(e) {}
   _sbUser = null;
-  mostrarToast('Sesión cerrada');
-  setTimeout(() => {
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('pantalla-portada').style.display = 'none';
-    document.getElementById('pantalla-intro').style.display = 'none';
-    document.getElementById('pantalla-login').style.display = 'block';
-    loginTab('ingreso');
-  }, 500);
+  // Limpiar service worker y recargar página completamente
+  if ('serviceWorker' in navigator) {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for (let r of regs) await r.unregister();
+  }
+  window.location.reload(true);
 }
 
 // ── Auto-sync cada vez que se guarda un día ───────────────────
