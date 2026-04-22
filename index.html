@@ -1327,7 +1327,7 @@ function introAnterior() {
       <button class="nav-btn" id="btn-ant" onclick="navegarDia(-1)">&#8592; Anterior</button>
       <select class="nav-sel" id="sel-dia" onchange="irADia(+this.value)"></select>
       <input type="date" class="nav-fecha" id="nav-fecha" title="Fecha del registro">
-      <button class="nav-btn primario" id="btn-sig" onclick="navegarDia(1)">Siguiente &#8594;</button>
+      <button class="nav-btn primario" id="btn-sig" onclick="intentarSiguiente()">Siguiente &#8594;</button>
       <span class="hdr-day-badge" id="badge-dia">Día 1 · 100</span>
     </div>
   </div>
@@ -1570,6 +1570,7 @@ function introAnterior() {
     </div>
     <div class="footer-right">
       <button class="btn-acc" onclick="guardarSolo()">Guardar</button>
+      <button class="btn-acc primary" id="btn-guardar" onclick="guardarYSiguiente()">Guardar y Siguiente &#8594;</button>
       <button class="btn-metamorfosis" id="btn-meta" onclick="abrirAnalisis()">
         🦋 Análisis de mi Metamorfosis
       </button>
@@ -1990,32 +1991,12 @@ function diaMaximoPermitido() {
   return diasGuardados + 1;
 }
 
-/* ─── DÍA MÁXIMO — solo hoy y anteriores ─── */
-function diaMaximoPermitido() {
-  // El máximo es el número de días registrados hasta hoy
-  const todos = ST.all();
-  const diasGuardados = Object.values(todos).filter(d => tieneDatos(d)).length;
-  // Pueden estar en el día actual (que puede ser nuevo) o en días anteriores
-  return diasGuardados + 1;
-}
-
-function diaDeHoy() {
-  // Retorna el número de día que corresponde a hoy
-  const todos = ST.all();
-  const fechaHoy = hoy();
-  const diaHoy = Object.values(todos).find(e => e && e.fecha === fechaHoy);
-  if (diaHoy) return diaHoy.dia;
-  // Si no hay registro de hoy, es el siguiente día
-  const diasGuardados = Object.values(todos).filter(d => tieneDatos(d)).length;
-  return diasGuardados + 1;
-}
-
 /* ─── NAVEGACIÓN ─── */
 function irADia(dia) {
   cancelarAutoGuardado();
-  const maximo = diaDeHoy(); // Nunca pasar del día de hoy
+  const maximo = diaMaximoPermitido();
   if (dia > maximo) {
-    toast(`⚠ Solo puedes registrar hasta el día de hoy`);
+    toast(`⚠ Primero guarda el día ${maximo} para continuar`);
     dia = maximo;
   }
   diaActual = Math.max(1, Math.min(100, dia));
@@ -2026,16 +2007,7 @@ function irADia(dia) {
   actualizarUI();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function navegarDia(delta) {
-  // Solo permitir ir hacia atrás o al día de hoy
-  const nuevo = diaActual + delta;
-  const maximo = diaDeHoy();
-  if (nuevo > maximo) {
-    toast(`⚠ Solo puedes registrar hasta el día de hoy`);
-    return;
-  }
-  irADia(nuevo);
-}
+function navegarDia(delta) { irADia(diaActual + delta); }
 
 /* ─── BUSCAR DÍA POR FECHA ─── */
 function irAFecha(fecha) {
@@ -2081,27 +2053,9 @@ function guardarYSiguiente() {
   if (_sbUser) sincronizarDatos();
 }
 function pedirLimpiar() {
-  limpiar();
-  valS('nav-fecha', hoy());
-  renderFrase(diaActual);
-  toast('Formulario limpiado — los datos guardados no se borran');
-}
-
-function eliminarDia() {
-  const todos = ST.all();
-  if (!tieneDatos(todos[diaActual])) {
-    toast('Este día no tiene datos guardados');
-    return;
+  if (confirm('¿Limpiar el formulario? Los datos ya guardados no se borran.')) {
+    limpiar(); valS('nav-fecha', hoy()); renderFrase(diaActual); toast('Formulario limpio');
   }
-  // Eliminar el día del storage
-  delete todos[diaActual];
-  const sk = getSK();
-  localStorage.setItem(sk, JSON.stringify(todos));
-  limpiar();
-  valS('nav-fecha', hoy());
-  actualizarUI();
-  toast(`✦ Día ${diaActual} eliminado`);
-  if (_sbUser) sincronizarDatos();
 }
 
 /* ─── AUTO-GUARDADO — DESACTIVADO, solo botón manual ─── */
@@ -2125,7 +2079,7 @@ function actualizarUI() {
   const bd = el('badge-dia'); if (bd) bd.textContent = `Día ${diaActual} · 100`;
   const sd = el('sel-dia'); if (sd) sd.value = diaActual;
   const ba = el('btn-ant'); if (ba) ba.disabled = diaActual <= 1;
-  const bs = el('btn-sig'); if (bs) bs.disabled = diaActual >= diaDeHoy();
+  const bs = el('btn-sig'); if (bs) bs.disabled = diaActual >= 100;
   const baf = el('btn-ant-f'); if (baf) baf.disabled = diaActual <= 1;
   const fd = el('fecha-display'); const fv = valG('nav-fecha');
   if (fd) fd.textContent = fv || hoy();
@@ -2508,28 +2462,11 @@ function _initJournal() {
   conectarAutoGuardado();
   window.addEventListener('beforeunload', guardarAlCerrar);
   document.addEventListener('visibilitychange', ()=>{ if(document.hidden) guardarAlCerrar(); });
-
-  // Buscar si ya hay un registro para hoy
-  const fechaHoy = hoy();
+  // Ir al primer día sin datos reales
   const todos = ST.all();
-  let inicio = null;
-
-  // 1. Buscar día con fecha de hoy — siempre volver a ese día
-  const diaHoy = Object.values(todos).find(e => e && e.fecha === fechaHoy);
-  if (diaHoy) {
-    inicio = diaHoy.dia;
-  } else {
-    // 2. No hay registro de hoy — ir al último día guardado (no crear uno nuevo)
-    const diasGuardados = Object.values(todos).filter(d => tieneDatos(d));
-    if (diasGuardados.length > 0) {
-      // Ir al último día guardado para que pueda ver y completar
-      const ultimo = diasGuardados[diasGuardados.length - 1];
-      inicio = ultimo.dia;
-    } else {
-      inicio = 1;
-    }
-  }
-  irADia(inicio || 1);
+  let inicio = 1;
+  for (let i=1;i<=100;i++) { if (!tieneDatos(todos[i])) { inicio=i; break; } if(i===100) inicio=100; }
+  irADia(inicio);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

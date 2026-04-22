@@ -1,6 +1,6 @@
 {
   "name": "100 Días desde el Capullo",
-  "short_name": "JOURNAL",
+  "short_name": "100 Días",
   "description": "100 días de observación personal para descubrir los patrones que rodean tus episodios.",
   "start_url": "/app/",
   "display": "standalone",
