@@ -46,13 +46,33 @@ body { font-family: var(--bf); background: var(--bg); color: var(--text); min-he
 #pantalla-portada {
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
-  background: #FFFFFF;
+  background:
+    radial-gradient(ellipse at 60% 40%, rgba(232,137,26,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 30% 70%, rgba(106,27,154,0.18) 0%, transparent 55%),
+    linear-gradient(160deg, #2D0A5E 0%, #4A148C 40%, #6A1BA0 70%, #2D0A5E 100%);
   padding: 2rem;
   position: relative;
   overflow: hidden;
 }
-#pantalla-portada::before { display:none; }
-#pantalla-portada::after { display:none; }
+/* Destello decorativo inspirado en las chispas de la portada */
+#pantalla-portada::before {
+  content: '';
+  position: absolute;
+  top: 15%; right: 12%;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(232,137,26,0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+#pantalla-portada::after {
+  content: '';
+  position: absolute;
+  bottom: 18%; left: 10%;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(201,168,232,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
 .portada-box {
   max-width: 420px; width: 100%;
   text-align: center;
@@ -68,39 +88,38 @@ body { font-family: var(--bf); background: var(--bg); color: var(--text); min-he
   font-family: 'Playfair Display', Georgia, serif;
   font-size: clamp(4rem, 18vw, 7rem);
   font-weight: 900;
-  color: var(--purple);
+  color: #F5E6C8;
   line-height: 1;
   letter-spacing: -0.02em;
   margin-bottom: 0.1rem;
+  text-shadow: 0 4px 24px rgba(74,20,140,0.5);
 }
 .portada-titulo {
   font-family: var(--tf);
   font-size: clamp(1.1rem, 4vw, 1.6rem);
-  color: var(--purple);
+  color: #F5E6C8;
   line-height: 1.3;
   margin-bottom: 0.6rem;
   letter-spacing: 0.02em;
+  text-shadow: 0 2px 18px rgba(74,20,140,0.6);
   font-weight: 400;
 }
 .portada-subtitulo {
   font-family: var(--tf);
   font-style: italic;
   font-size: 0.9rem;
-  color: var(--gold);
+  color: rgba(245,228,200,0.75);
   letter-spacing: 0.06em;
   margin-bottom: 1.8rem;
   padding-bottom: 1.4rem;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid rgba(201,168,232,0.35);
 }
 .portada-desc {
   font-family: var(--bf);
-  font-size: 0.88rem;
-  line-height: 1.95;
-  color: var(--text);
+  font-size: 0.84rem;
+  line-height: 1.75;
+  color: rgba(237,224,255,0.82);
   margin-bottom: 2.2rem;
-  border-left: 3px solid var(--gold);
-  padding-left: 16px;
-  text-align: left;
 }
 .portada-btn {
   font-family: var(--bf);
@@ -209,32 +228,10 @@ body { font-family: var(--bf); background: var(--bg); color: var(--text); min-he
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--line); cursor: pointer;
   transition: background 0.1s; flex-shrink: 0;
-  position: relative;
 }
 .dia-pt.done    { background: #F5C47A; }
 .dia-pt.current { background: var(--purple); }
-.dia-pt:hover   { background: var(--purple-m); transform: scale(1.8); z-index: 10; }
-
-/* Tooltip del día */
-.dia-pt::after {
-  content: attr(data-info);
-  position: absolute;
-  bottom: 130%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--purple);
-  color: #F5E6C8;
-  font-family: var(--bf);
-  font-size: 0.6rem;
-  white-space: nowrap;
-  padding: 3px 7px;
-  border-radius: 4px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s;
-  z-index: 100;
-}
-.dia-pt:hover::after { opacity: 1; }
+.dia-pt:hover   { background: var(--purple-m); }
 
 /* ══════════════════════════════════════════════════════
    PANELES
@@ -739,6 +736,10 @@ body { font-family: var(--bf); background: var(--bg); color: var(--text); min-he
   .nav-sel { font-size: 0.7rem; }
 }
 
+.opt-lbl.em-pos { background:#FFFBF0; border-color:#F5C47A; }
+.opt-lbl.em-pos:hover { background:#FFF3D0; }
+.opt-lbl.em-pos:has(input:checked) { background:#FFF3D0; border-color:#E8891A; }
+.opt-lbl.em-pos:has(input:checked) span { color:#C8680A; }
 .em-grupo-label {
   width:100%; font-family:var(--tf); font-size:0.68rem;
   letter-spacing:0.12em; text-transform:uppercase;
@@ -746,9 +747,7 @@ body { font-family: var(--bf); background: var(--bg); color: var(--text); min-he
   border-bottom:1px solid var(--line); margin:4px 0 2px;
   display:block;
 }
-/* Sin polarización — mismo estilo para todos los grupos */
-.em-grupo-exp { color:var(--purple-m) !important; border-color:var(--purple-l) !important; }
-.em-grupo-con { color:var(--muted) !important; border-color:var(--line) !important; }
+.em-grupo-pos { color:#C8680A !important; border-color:#F5C47A !important; }
 
 </style>
 
@@ -762,24 +761,10 @@ const _sb = supabase.createClient(_SB_URL, _SB_KEY);
 let _sbUser = null;
 
 // On auth state change
-_sb.auth.onAuthStateChange(async (event, session) => {
+_sb.auth.onAuthStateChange((event, session) => {
   _sbUser = session?.user || null;
   if (event === 'SIGNED_IN') {
-    await descargarDatos();
-    const uid = _sbUser?.id || obtenerUsuarioId();
-    const intro = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
-    const nombre = localStorage.getItem('capullo_nombre_' + uid) || '';
-    const tieneIntro = nombre || intro.tipo || intro.p1;
-
-    document.getElementById('pantalla-login').style.display = 'none';
-    if (tieneIntro) {
-      document.getElementById('pantalla-portada').style.display = 'none';
-      document.getElementById('pantalla-intro').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      if (typeof _initJournal === 'function') _initJournal();
-    } else {
-      document.getElementById('pantalla-portada').style.display = 'flex';
-    }
+    ocultarLogin();
     sincronizarDatos();
   }
   if (event === 'SIGNED_OUT') {
@@ -841,58 +826,40 @@ async function checkSession() {
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div id="login-nombre-campo">
             <label style="font-family:'Source Serif 4',serif;font-size:0.75rem;
-              color:rgba(237,224,255,0.9);display:block;margin-bottom:4px;">
+              color:rgba(237,224,255,0.7);display:block;margin-bottom:4px;">
               ¿Cómo quieres llamarte?</label>
             <input id="login-nombre" type="text" placeholder="Tu nombre o apodo"
               style="width:100%;box-sizing:border-box;
               font-family:'Source Serif 4',serif;font-size:0.88rem;
-              background:#FFFFFF;border:1px solid rgba(201,168,232,0.4);
-              border-radius:6px;padding:10px 12px;color:#1A0A2E;outline:none;">
+              background:rgba(255,255,255,0.08);border:1px solid rgba(201,168,232,0.4);
+              border-radius:6px;padding:10px 12px;color:#F5E6C8;outline:none;">
           </div>
           <div>
             <label style="font-family:'Source Serif 4',serif;font-size:0.75rem;
-              color:rgba(237,224,255,0.9);display:block;margin-bottom:4px;">
+              color:rgba(237,224,255,0.7);display:block;margin-bottom:4px;">
               Correo electrónico</label>
             <input id="login-email" type="email" placeholder="tu@correo.com"
               style="width:100%;box-sizing:border-box;
               font-family:'Source Serif 4',serif;font-size:0.88rem;
-              background:#FFFFFF;border:1px solid rgba(201,168,232,0.4);
-              border-radius:6px;padding:10px 12px;color:#1A0A2E;outline:none;">
+              background:rgba(255,255,255,0.08);border:1px solid rgba(201,168,232,0.4);
+              border-radius:6px;padding:10px 12px;color:#F5E6C8;outline:none;">
           </div>
           <div>
             <label style="font-family:'Source Serif 4',serif;font-size:0.75rem;
-              color:rgba(237,224,255,0.9);display:block;margin-bottom:4px;">
+              color:rgba(237,224,255,0.7);display:block;margin-bottom:4px;">
               Contraseña</label>
-            <div style="position:relative;">
-              <input id="login-pass" type="password" placeholder="Mínimo 6 caracteres"
-                style="width:100%;box-sizing:border-box;
-                font-family:'Source Serif 4',serif;font-size:0.88rem;
-                background:#FFFFFF;border:1px solid rgba(201,168,232,0.4);
-                border-radius:6px;padding:10px 40px 10px 12px;color:#1A0A2E;outline:none;">
-              <button type="button" onclick="togglePassword()" style="
-                position:absolute;right:10px;top:50%;transform:translateY(-50%);
-                background:transparent;border:none;cursor:pointer;
-                color:#4A148C;font-size:1rem;padding:0;line-height:1;"
-                id="btn-eye">👁</button>
-            </div>
+            <input id="login-pass" type="password" placeholder="Mínimo 6 caracteres"
+              style="width:100%;box-sizing:border-box;
+              font-family:'Source Serif 4',serif;font-size:0.88rem;
+              background:rgba(255,255,255,0.08);border:1px solid rgba(201,168,232,0.4);
+              border-radius:6px;padding:10px 12px;color:#F5E6C8;outline:none;">
           </div>
         </div>
 
         <!-- Mensaje error/éxito -->
         <div id="login-msg" style="
           margin-top:12px;font-family:'Source Serif 4',serif;font-size:0.8rem;
-          color:#F5C47A;text-align:center;min-height:20px;line-height:1.5;"></div>
-
-        <!-- Botón reenviar confirmación (oculto por defecto) -->
-        <div id="login-reenviar-zona" style="display:none;text-align:center;margin-top:10px;">
-          <button onclick="reenviarConfirmacion()" style="
-            font-family:'Source Serif 4',serif;font-size:0.78rem;
-            background:rgba(255,255,255,0.1);color:rgba(237,224,255,0.8);
-            border:1px solid rgba(201,168,232,0.4);border-radius:6px;
-            padding:8px 18px;cursor:pointer;transition:all 0.2s;">
-            ✉ Reenviar correo de confirmación
-          </button>
-        </div>
+          color:#F5C47A;text-align:center;min-height:20px;"></div>
 
         <!-- Botón acción -->
         <button id="login-btn" onclick="loginAccion()" style="
@@ -928,18 +895,13 @@ async function checkSession() {
   <div class="portada-box">
     <span class="portada-emoji">🦋</span>
     <div class="portada-100">100</div>
-    <h1 class="portada-titulo">Días desde el Capullo</h1>
-    <p class="portada-subtitulo">Un viaje de autoconocimiento</p>
+    <h1 class="portada-titulo">días de observación<br><em>desde el capullo</em></h1>
+    <p class="portada-subtitulo">Mi viaje de autoconocimiento</p>
     <p class="portada-desc">
-      100 días de preguntas puntuales sobre tu cuerpo, emociones y hábitos —
-      con honestidad y sin juicio —
-      para descubrir los patrones que rodean tus episodios.
+      Un journal para registrar lo que sientes, lo que vives y lo que se repite.<br>
+      Tu espacio privado — disponible en celular y computador.
     </p>
     <button class="portada-btn" onclick="irAIntro()">✦ Comenzar mi viaje ✦</button>
-    <p style="font-family:var(--bf);font-style:italic;font-size:0.68rem;
-      color:rgba(201,168,232,0.6);margin-top:1.6rem;letter-spacing:0.04em;">
-      Inspirado en el libro "Desde el Capullo" · Desarrollado por su autora
-    </p>
   </div>
 </div>
 
@@ -978,7 +940,7 @@ async function checkSession() {
       </div>
       <h3 style="font-size:1rem; font-weight:bold; color:#2A1A3E; margin-bottom:0.8rem;">Mi Historia</h3>
       <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1rem;">Este journal nace de una historia personal. De muchos años viviendo con epilepsia, intentando entender un cuerpo que a veces parece hablar en un idioma que cuesta descifrar.</p>
-      <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1rem;">Durante mucho tiempo busqué respuestas: por qué ocurrían los episodios, qué los provocaba, si había algo que pudiera hacer para evitarlas. Con los años entendí que, aunque no siempre podemos controlar lo que sucede, sí podemos aprender a observarlo.</p>
+      <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1rem;">Durante mucho tiempo busqué respuestas: por qué ocurrían las crisis, qué las provocaba, si había algo que pudiera hacer para evitarlas. Con los años entendí que, aunque no siempre podemos controlar lo que sucede, sí podemos aprender a observarlo.</p>
       <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1.5rem;">Esa observación paciente, honesta y sin juicio, es lo que yo llamo recuperar nuestra <strong>soberanía biológica</strong>. Cambia por completo la forma en que vivimos nuestra propia experiencia.</p>
       <h3 style="font-size:1rem; font-weight:bold; color:#2A1A3E; margin-bottom:0.8rem;">Por qué observar importa</h3>
       <p style="font-size:0.9rem; line-height:1.75; color:#2A1A3E; margin-bottom:1rem;">Atravesar esta condición puede sentirse muy solitario. Pero este journal nace con una misión: que nadie tenga que recorrer este camino a ciegas.</p>
@@ -1022,15 +984,8 @@ async function checkSession() {
           </select>
         </div>
         <div class="intro-campo">
-          <label>Medicamentos actuales</label>
-          <div id="meds-lista" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
-          <button type="button" onclick="agregarMedicamento()" style="
-            margin-top:8px;font-family:var(--bf);font-size:0.75rem;
-            background:transparent;border:1px dashed var(--purple-l);
-            color:var(--purple);padding:6px 14px;cursor:pointer;
-            letter-spacing:0.06em;transition:all 0.15s;">
-            + Agregar medicamento
-          </button>
+          <label>Medicamentos actuales y dosis aproximada</label>
+          <textarea id="mi-medicamentos" rows="2" placeholder="Ej: Valproato 500mg, 2 veces al día..."></textarea>
         </div>
         <div class="intro-campo">
           <label>¿Has identificado posibles desencadenantes?</label>
@@ -1045,28 +1000,11 @@ async function checkSession() {
           <input type="text" id="mi-pasatiempos" placeholder="Ej: leer, diseñar...">
         </div>
         <div class="intro-campo">
-          <label>¿Hábitos importantes en tu día a día?</label>
+          <label>Hábitos importantes en tu día a día</label>
           <textarea id="mi-habitos" rows="2" placeholder="Ej: dormir 8 horas, meditar..."></textarea>
         </div>
-        <div class="intro-campo">
-          <label>Tu zona horaria</label>
-          <select id="mi-timezone" style="font-family:var(--bf);font-size:0.83rem;color:var(--text);border:none;border-bottom:1px solid var(--line);background:transparent;padding:5px 2px;outline:none;">
-            <option value="America/Bogota">Colombia (UTC-5)</option>
-            <option value="America/Mexico_City">México Centro (UTC-6)</option>
-            <option value="America/Caracas">Venezuela (UTC-4)</option>
-            <option value="America/Lima">Perú (UTC-5)</option>
-            <option value="America/Santiago">Chile (UTC-3/-4)</option>
-            <option value="America/Argentina/Buenos_Aires">Argentina (UTC-3)</option>
-            <option value="America/Sao_Paulo">Brasil (UTC-3)</option>
-            <option value="America/New_York">EEUU Este (UTC-5/-4)</option>
-            <option value="America/Los_Angeles">EEUU Oeste (UTC-8/-7)</option>
-            <option value="Europe/Madrid">España (UTC+1/+2)</option>
-            <option value="UTC">UTC (internacional)</option>
-          </select>
-        </div>
-
-      </div><!-- fin campos paso 2 -->
-    </div><!-- fin intro-paso-2 -->
+      </div>
+    </div>
 
     <!-- PASO 3: PREGUNTAS PARA COMENZAR -->
     <div class="intro-paso" id="intro-paso-3" style="display:none;">
@@ -1181,15 +1119,6 @@ function introActualizar() {
     const el = document.getElementById('intro-paso-' + i);
     if (el) el.style.display = (i === introStepActual) ? 'block' : 'none';
   }
-  // Inicializar meds cuando llegue al paso 2
-  if (introStepActual === 2) {
-    const uid = obtenerUsuarioId();
-    const intro = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
-    setTimeout(() => initMedsLista(intro.medicamentos || ''), 50);
-    // Cargar timezone si ya estaba guardada
-    const tzEl = document.getElementById('mi-timezone');
-    if (tzEl && intro.timezone) tzEl.value = intro.timezone;
-  }
   // Step bar
   const pct = (introStepActual / introTotalSteps * 100) + '%';
   document.getElementById('intro-step-fill').style.width = pct;
@@ -1216,27 +1145,18 @@ function introSiguiente() {
     introStepActual++;
     introActualizar();
   } else {
-    // Guardar datos de intro en localStorage usando ID correcto
+    // Guardar datos de intro en localStorage
     const uid = obtenerUsuarioId();
-    // Recolectar medicamentos estructurados
-    const meds = [];
-    document.querySelectorAll('.med-fila').forEach(fila => {
-      const nombre = fila.querySelector('.med-nombre')?.value?.trim() || '';
-      const dosis  = fila.querySelector('.med-dosis')?.value?.trim() || '';
-      const freq   = fila.querySelector('.med-freq')?.value?.trim() || '';
-      if (nombre) meds.push({ nombre, dosis, freq });
-    });
     const introData = {
       tipo: document.getElementById('mi-tipo')?.value || '',
       edadCrisis: document.getElementById('mi-edad')?.value || '',
       tiempo: document.getElementById('mi-tiempo')?.value || '',
       control: document.getElementById('mi-control')?.value || '',
-      medicamentos: JSON.stringify(meds),
+      medicamentos: document.getElementById('mi-medicamentos')?.value || '',
       desencadenantes: document.getElementById('mi-desencadenantes')?.value || '',
       actividad: document.getElementById('mi-actividad')?.value || '',
       pasatiempos: document.getElementById('mi-pasatiempos')?.value || '',
       habitos: document.getElementById('mi-habitos')?.value || '',
-      timezone: document.getElementById('mi-timezone')?.value || 'America/Bogota',
       p1: document.getElementById('p1')?.value || '',
       p2: document.getElementById('p2')?.value || '',
       p3: document.getElementById('p3')?.value || '',
@@ -1254,50 +1174,6 @@ function introSiguiente() {
     if (typeof sincronizarDatos === 'function' && _sbUser) {
       setTimeout(sincronizarDatos, 500);
     }
-  }
-}
-
-// ── Medicamentos dinámicos ─────────────────────────────────
-let _medCount = 0;
-function agregarMedicamento(data) {
-  _medCount++;
-  const lista = document.getElementById('meds-lista');
-  if (!lista) return;
-  const fila = document.createElement('div');
-  fila.className = 'med-fila';
-  fila.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1.5fr auto;gap:6px;align-items:end;';
-  fila.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:2px;">
-      <span style="font-size:0.63rem;color:var(--muted);letter-spacing:0.06em;">Medicamento</span>
-      <input type="text" class="med-nombre lin" placeholder="Nombre…" value="${data?.nombre||''}">
-    </div>
-    <div style="display:flex;flex-direction:column;gap:2px;">
-      <span style="font-size:0.63rem;color:var(--muted);letter-spacing:0.06em;">Dosis</span>
-      <input type="text" class="med-dosis lin" placeholder="mg…" value="${data?.dosis||''}">
-    </div>
-    <div style="display:flex;flex-direction:column;gap:2px;">
-      <span style="font-size:0.63rem;color:var(--muted);letter-spacing:0.06em;">Frecuencia</span>
-      <input type="text" class="med-freq lin" placeholder="cada cuánto…" value="${data?.freq||''}">
-    </div>
-    <button type="button" onclick="this.closest('.med-fila').remove()"
-      style="background:transparent;border:none;color:var(--muted);cursor:pointer;
-      font-size:1rem;padding:2px 4px;line-height:1;">×</button>
-  `;
-  lista.appendChild(fila);
-}
-
-// Inicializar lista de meds al llegar al paso 2
-function initMedsLista(medData) {
-  const lista = document.getElementById('meds-lista');
-  if (!lista) return;
-  lista.innerHTML = '';
-  _medCount = 0;
-  let meds = [];
-  try { meds = JSON.parse(medData || '[]'); } catch { meds = []; }
-  if (meds.length === 0) {
-    agregarMedicamento(); // Al menos una fila vacía
-  } else {
-    meds.forEach(m => agregarMedicamento(m));
   }
 }
 
@@ -1321,7 +1197,7 @@ function introAnterior() {
     <div class="hdr-tabs">
       <button class="hdr-tab" id="tab-perfil" onclick="mostrarPanel('perfil')">Mi Perfil</button>
       <button class="hdr-tab activo" id="tab-diario" onclick="mostrarPanel('diario')">Diario</button>
-      <button class="hdr-tab" id="tab-dashboard" onclick="mostrarPanel('dashboard')" style="display:none;">Dashboard</button>
+      <button class="hdr-tab" id="tab-dashboard" onclick="mostrarPanel('dashboard')">Dashboard</button>
     </div>
     <div class="hdr-nav" id="hdr-nav-diario">
       <button class="nav-btn" id="btn-ant" onclick="navegarDia(-1)">&#8592; Anterior</button>
@@ -1410,20 +1286,20 @@ function introAnterior() {
       <div class="campo">
         <span class="clbl">Emociones presentes hoy</span>
         <div class="opts">
-          <div class="em-grupo-label em-grupo-exp">Expansión</div>
+          <div class="em-grupo-label">Difíciles</div>
           <label class="opt-lbl"><input type="checkbox" id="em-est"><span>Estrés</span></label>
           <label class="opt-lbl"><input type="checkbox" id="em-ans"><span>Ansiedad</span></label>
-          <label class="opt-lbl"><input type="checkbox" id="em-irr"><span>Irritabilidad</span></label>
-          <label class="opt-lbl"><input type="checkbox" id="em-ale"><span>Alegría</span></label>
-          <label class="opt-lbl"><input type="checkbox" id="em-ent"><span>Entusiasmo</span></label>
-          <label class="opt-lbl"><input type="checkbox" id="em-ene"><span>Energía</span></label>
-          <div class="em-grupo-label em-grupo-con">Contención</div>
           <label class="opt-lbl"><input type="checkbox" id="em-tri"><span>Tristeza</span></label>
+          <label class="opt-lbl"><input type="checkbox" id="em-irr"><span>Irritabilidad</span></label>
           <label class="opt-lbl"><input type="checkbox" id="em-mie"><span>Miedo</span></label>
           <label class="opt-lbl"><input type="checkbox" id="em-cal"><span>Calma</span></label>
-          <label class="opt-lbl"><input type="checkbox" id="em-gra"><span>Gratitud</span></label>
-          <label class="opt-lbl"><input type="checkbox" id="em-con"><span>Confianza</span></label>
-          <label class="opt-lbl"><input type="checkbox" id="em-bie"><span>Bienestar</span></label>
+          <div class="em-grupo-label em-grupo-pos">Positivas</div>
+          <label class="opt-lbl em-pos"><input type="checkbox" id="em-ale"><span>Alegría</span></label>
+          <label class="opt-lbl em-pos"><input type="checkbox" id="em-ent"><span>Entusiasmo</span></label>
+          <label class="opt-lbl em-pos"><input type="checkbox" id="em-ene"><span>Energía</span></label>
+          <label class="opt-lbl em-pos"><input type="checkbox" id="em-gra"><span>Gratitud</span></label>
+          <label class="opt-lbl em-pos"><input type="checkbox" id="em-con"><span>Confianza</span></label>
+          <label class="opt-lbl em-pos"><input type="checkbox" id="em-bie"><span>Bienestar</span></label>
         </div>
       </div>
 
@@ -1569,7 +1445,6 @@ function introAnterior() {
       <button class="btn-acc" onclick="exportJSON()" style="font-size:0.65rem;">⬇ Exportar</button>
     </div>
     <div class="footer-right">
-      <button class="btn-acc" onclick="guardarSolo()">Guardar</button>
       <button class="btn-acc primary" id="btn-guardar" onclick="guardarYSiguiente()">Guardar y Siguiente &#8594;</button>
       <button class="btn-metamorfosis" id="btn-meta" onclick="abrirAnalisis()">
         🦋 Análisis de mi Metamorfosis
@@ -1586,14 +1461,15 @@ function introAnterior() {
 <div id="panel-dashboard" class="panel">
   <div class="dash-header">
     <div>
-      <h2>Dashboard</h2>
-      <p>Análisis de tus patrones de salud</p>
+      <h2>Dashboard Mensual</h2>
+      <p>Análisis comparativo de tus patrones de salud</p>
     </div>
     <div class="dash-controls">
       <select class="dash-select" id="dash-periodo" onchange="renderDashboard()">
-        <option value="0">Días 1 – 30</option>
-        <option value="1">Días 31 – 60</option>
-        <option value="2">Días 61 – 100</option>
+        <option value="0">Días 1 – 30 · Mes 1</option>
+        <option value="1">Días 31 – 60 · Mes 2</option>
+        <option value="2">Días 61 – 90 · Mes 3</option>
+        <option value="3">Días 91 – 100 · Cierre</option>
       </select>
       <button class="dash-refresh" onclick="renderDashboard()">↻ Actualizar</button>
     </div>
@@ -1608,7 +1484,8 @@ function introAnterior() {
   <!-- NOMBRE USUARIO -->
   <div style="text-align:center; padding:28px 0 20px; border-bottom:1px solid var(--line); margin-bottom:24px;">
     <div style="font-size:2rem;margin-bottom:8px;">🦋</div>
-    <div id="perfil-nombre-display" style="font-family:var(--tf);font-size:1.9rem;font-weight:700;color:var(--purple);margin-bottom:12px;">—</div>
+    <div id="perfil-nombre-display" style="font-family:var(--tf);font-size:1.9rem;font-weight:700;color:var(--purple);margin-bottom:4px;">—</div>
+    <div id="perfil-nombre-subtexto" style="font-family:var(--bf);font-size:0.75rem;color:var(--muted);margin-bottom:12px;">Tu nombre en el journal</div>
     <div id="perfil-nombre-edit-zone"></div>
   </div>
 
@@ -1634,17 +1511,17 @@ function introAnterior() {
       font-family:var(--tf);font-size:0.82rem;font-style:italic;
       background:transparent;color:var(--purple);
       border:1px solid var(--purple-l);padding:11px 24px;
-      cursor:pointer;width:260px;">Ver presentación completa del journal</button>
+      cursor:pointer;">Ver presentación completa del journal</button>
     <button onclick="sincronizarDatos()" style="
-      font-family:var(--bf);font-size:0.82rem;
+      font-family:var(--bf);font-size:0.78rem;
       background:transparent;color:#E8891A;
-      border:1px solid #F5C47A;padding:11px 24px;
-      cursor:pointer;width:260px;">☁ Guardar en la nube ahora</button>
+      border:1px solid #F5C47A;padding:9px 20px;
+      cursor:pointer;">☁ Guardar en la nube ahora</button>
     <button onclick="cerrarSesion()" style="
-      font-family:var(--bf);font-size:0.82rem;
-      background:transparent;color:var(--purple);
-      border:1px solid var(--purple);padding:11px 24px;
-      cursor:pointer;width:260px;">Cerrar sesión</button>
+      font-family:var(--bf);font-size:0.75rem;
+      background:transparent;color:var(--muted);
+      border:1px solid var(--line);padding:8px 18px;
+      cursor:pointer;">Cerrar sesión</button>
   </div>
 
 </div>
@@ -1765,11 +1642,6 @@ const DIAS_USUARIO = new Set([50,55,60,65,70,75,80,85,90,95]);
 
 /* ─── USUARIO ÚNICO (UUID automático, sin login) ─── */
 function obtenerUsuarioId() {
-  // Si hay sesión de Supabase activa, usar ese ID (consistente entre dispositivos)
-  if (typeof _sbUser !== 'undefined' && _sbUser && _sbUser.id) {
-    return _sbUser.id;
-  }
-  // Sin sesión: usar UID local del dispositivo
   const KEY = 'capullo_uid';
   try {
     let uid = localStorage.getItem(KEY);
@@ -1788,16 +1660,11 @@ const SK = 'capullo_v5_' + USER_ID;
 let diaActual = 1;
 let _autoTimer = null;
 
-// Helper dinámico para obtener la storage key correcta (con sesión o sin ella)
-function getSK() {
-  return 'capullo_v5_' + obtenerUsuarioId();
-}
-
 /* ─── STORAGE SEGURO ─── */
 const ST = {
   all() {
     try {
-      const raw = localStorage.getItem(getSK());
+      const raw = localStorage.getItem(SK);
       if (!raw) return {};
       const p = JSON.parse(raw);
       return (typeof p === 'object' && !Array.isArray(p)) ? p : {};
@@ -1806,8 +1673,8 @@ const ST = {
   save(data) {
     try {
       const json = JSON.stringify(data);
-      localStorage.setItem(getSK(), json);
-      if (localStorage.getItem(getSK()) !== json) throw new Error('Verificación falló');
+      localStorage.setItem(SK, json);
+      if (localStorage.getItem(SK) !== json) throw new Error('Verificación falló');
       return true;
     } catch (e) {
       console.error('Error guardando:', e);
@@ -1873,12 +1740,8 @@ function recolectar() {
     fraseU: DIAS_USUARIO.has(diaActual) ? valG('frase-u') : null,
     ep1n: n1, ep1s, ep2n: n2, ep2s, can: escG('escC'), numEp,
     trMed: chkG('tr-med'), trDos: chkG('tr-dos'), trHor: chkG('tr-hor'), trCual: valG('tr-cual'),
-    // Expansión
-    emEst: chkG('em-est'), emAns: chkG('em-ans'), emIrr: chkG('em-irr'),
-    emAle: chkG('em-ale'), emEnt: chkG('em-ent'), emEne: chkG('em-ene'),
-    // Contención
-    emTri: chkG('em-tri'), emMie: chkG('em-mie'), emCal: chkG('em-cal'),
-    emGra: chkG('em-gra'), emCon: chkG('em-con'), emBie: chkG('em-bie'),
+    emCal: chkG('em-cal'), emEst: chkG('em-est'), emAns: chkG('em-ans'),
+    emTri: chkG('em-tri'), emIrr: chkG('em-irr'), emMie: chkG('em-mie'),
     emPred: valG('em-pred'), emNota: valG('em-nota'),
     alCas: chkG('al-cas'), alPro: chkG('al-pro'), alCam: chkG('al-cam'),
     alAzu: chkG('al-azu'), alCaf: chkG('al-caf'), alAnt: chkG('al-ant'),
@@ -1904,8 +1767,7 @@ function tieneDatos(e) {
   const tieneFrase = e.fraseU && typeof e.fraseU === 'string' && e.fraseU.trim().length > 0;
   const tieneSel = !!(e.ep1s || e.ep2s || e.can ||
     e.trMed || e.trDos || e.trHor ||
-    e.emEst || e.emAns || e.emIrr || e.emAle || e.emEnt || e.emEne ||
-    e.emTri || e.emMie || e.emCal || e.emGra || e.emCon || e.emBie ||
+    e.emCal || e.emEst || e.emAns || e.emTri || e.emIrr || e.emMie ||
     e.alCas || e.alPro || e.alCam || e.alAzu || e.alCaf || e.alAnt ||
     e.dig || e.act || e.doFoc || e.doGrl || e.ciclo || e.pant ||
     e.slH || e.slCal ||
@@ -1937,12 +1799,9 @@ function llenar(e) {
   escS('escC', e.can);
   chkS('tr-med',e.trMed); chkS('tr-dos',e.trDos);
   chkS('tr-hor',e.trHor); valS('tr-cual',e.trCual);
-  // Expansión
-  chkS('em-est',e.emEst); chkS('em-ans',e.emAns); chkS('em-irr',e.emIrr);
-  chkS('em-ale',e.emAle); chkS('em-ent',e.emEnt); chkS('em-ene',e.emEne);
-  // Contención
-  chkS('em-tri',e.emTri); chkS('em-mie',e.emMie); chkS('em-cal',e.emCal);
-  chkS('em-gra',e.emGra); chkS('em-con',e.emCon); chkS('em-bie',e.emBie);
+  chkS('em-cal',e.emCal); chkS('em-est',e.emEst);
+  chkS('em-ans',e.emAns); chkS('em-tri',e.emTri);
+  chkS('em-irr',e.emIrr); chkS('em-mie',e.emMie);
   valS('em-pred',e.emPred); valS('em-nota',e.emNota);
   chkS('al-cas',e.alCas); chkS('al-pro',e.alPro);
   chkS('al-cam',e.alCam); chkS('al-azu',e.alAzu);
@@ -1983,45 +1842,49 @@ function renderFrase(dia) {
   }
 }
 
-/* ─── DÍA MÁXIMO PERMITIDO ─── */
-function diaMaximoPermitido() {
-  const todos = ST.all();
-  const diasGuardados = Object.values(todos).filter(d => tieneDatos(d)).length;
-  // Pueden ir al siguiente día solo si el actual está guardado
-  return diasGuardados + 1;
-}
-
 /* ─── NAVEGACIÓN ─── */
 function irADia(dia) {
   cancelarAutoGuardado();
-  const maximo = diaMaximoPermitido();
-  if (dia > maximo) {
-    toast(`⚠ Primero guarda el día ${maximo} para continuar`);
-    dia = maximo;
+  const diaLimitado = Math.max(1, Math.min(100, dia));
+  const todos = ST.all();
+  // No permitir ir a un día sin datos que sea posterior al último día registrado
+  // a menos que ese día ya tenga datos guardados
+  const tieneDatosEseDia = todos[diaLimitado] && tieneDatos(todos[diaLimitado]);
+  // Calcular el máximo día permitido (el último con datos + 1, pero no más)
+  let maxPermitido = 1;
+  for (let i = 1; i <= 100; i++) {
+    if (todos[i] && tieneDatos(todos[i])) maxPermitido = i;
   }
-  diaActual = Math.max(1, Math.min(100, dia));
+  // Permitir el día actual registrado + 1 solo si es hoy
+  const fechaHoy = hoy();
+  let diaFinal = diaLimitado;
+  if (!tieneDatosEseDia && diaLimitado > maxPermitido + 1) {
+    diaFinal = maxPermitido + 1; // máximo un día adelante del último registrado
+  }
+  diaActual = diaFinal;
   limpiar();
   const e = ST.get(diaActual);
-  if (e) llenar(e); else valS('nav-fecha', hoy());
+  if (e) llenar(e); else valS('nav-fecha', fechaHoy);
   renderFrase(diaActual);
   actualizarUI();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function navegarDia(delta) { irADia(diaActual + delta); }
-
-/* ─── BUSCAR DÍA POR FECHA ─── */
-function irAFecha(fecha) {
-  if (!fecha) return;
-  const todos = ST.all();
-  // Buscar si existe un día guardado con esa fecha
-  const encontrado = Object.values(todos).find(e => e && e.fecha === fecha);
-  if (encontrado) {
-    irADia(encontrado.dia);
-    toast(`✦ Día ${encontrado.dia} · ${fecha}`);
-  } else {
-    // No hay día guardado con esa fecha — mostrar aviso
-    toast(`No hay registro para ${fecha}`);
+function navegarDia(delta) {
+  // No permitir ir hacia adelante si el día siguiente no tiene datos
+  if (delta > 0) {
+    const todos = ST.all();
+    const tieneSig = todos[diaActual + 1] && tieneDatos(todos[diaActual + 1]);
+    if (!tieneSig) {
+      // Solo permitir si el día actual ya fue guardado hoy
+      const fechaHoy = hoy();
+      const diaActualEsHoy = todos[diaActual]?.fecha === fechaHoy;
+      if (diaActualEsHoy) {
+        toast('Ya estás en el día de hoy ✦');
+        return;
+      }
+    }
   }
+  irADia(diaActual + delta);
 }
 
 /* ─── GUARDAR + VALIDACIÓN ─── */
@@ -2037,20 +1900,27 @@ function intentarSiguiente() {
   if (!ok) return;
   actualizarUI();
   toast(`✦ Día ${diaActual} guardado`);
-  if (diaActual < 100) irADia(diaActual + 1);
+  // Solo avanzar si el siguiente día ya existe o es hoy
+  const todos = ST.all();
+  const siguienteTieneDatos = todos[diaActual + 1] && tieneDatos(todos[diaActual + 1]);
+  const fechaHoy = hoy();
+  const fechaSiguiente = todos[diaActual + 1]?.fecha;
+  const esDiaDeHoy = todos[diaActual]?.fecha === fechaHoy;
+  if (diaActual < 100 && (siguienteTieneDatos || !esDiaDeHoy)) {
+    irADia(diaActual + 1);
+  } else if (esDiaDeHoy) {
+    toast('Ya estás en el día de hoy ✦');
+  } else {
+    irADia(diaActual + 1);
+  }
 }
 function guardarSolo() {
   const datos = recolectar();
-  if (ST.set(diaActual, datos)) {
-    actualizarUI();
-    toast(`✦ Día ${diaActual} guardado`);
-    if (_sbUser) sincronizarDatos();
-  }
+  if (ST.set(diaActual, datos)) { actualizarUI(); toast(`✦ Día ${diaActual} guardado`); }
 }
 function guardarYSiguiente() {
   if (diaActual === 100) { guardarSolo(); return; }
   intentarSiguiente();
-  if (_sbUser) sincronizarDatos();
 }
 function pedirLimpiar() {
   if (confirm('¿Limpiar el formulario? Los datos ya guardados no se borran.')) {
@@ -2058,17 +1928,35 @@ function pedirLimpiar() {
   }
 }
 
-/* ─── AUTO-GUARDADO — DESACTIVADO, solo botón manual ─── */
-function programarAutoGuardado() { /* desactivado */ }
+/* ─── AUTO-GUARDADO ─── */
+function programarAutoGuardado() {
+  cancelarAutoGuardado();
+  _autoTimer = setTimeout(() => {
+    const datos = recolectar();
+    if (tieneDatos(datos)) {
+      if (ST.set(diaActual, datos)) {
+        actualizarUI();
+        const t = el('toast');
+        if (t) { t.textContent = '✓ Guardado automáticamente'; t.style.opacity = '0.7'; t.classList.add('show'); clearTimeout(window._tT); window._tT = setTimeout(() => { t.classList.remove('show'); t.style.opacity = ''; }, 1800); }
+      }
+    }
+  }, 2000);
+}
 function cancelarAutoGuardado() { if (_autoTimer) { clearTimeout(_autoTimer); _autoTimer = null; } }
 function guardarAlCerrar() { cancelarAutoGuardado(); const d = recolectar(); if (tieneDatos(d)) ST.set(diaActual, d); }
 function conectarAutoGuardado() {
-  // Conectar calendario — al cambiar fecha busca el día correspondiente
-  const f = el('nav-fecha');
-  if (f) f.addEventListener('change', () => {
-    const fv = valG('nav-fecha');
-    if (fv) irAFecha(fv);
+  // Solo aplica al panel del diario, NO al perfil ni a la intro
+  const panelDiario = document.getElementById('panel-diario') || document;
+  panelDiario.querySelectorAll('input[type=text],input[type=number],textarea').forEach(i => {
+    i.addEventListener('input', programarAutoGuardado);
   });
+  panelDiario.querySelectorAll('input[type=checkbox]').forEach(c => {
+    c.addEventListener('change', programarAutoGuardado);
+  });
+  panelDiario.querySelectorAll('input[type=radio]').forEach(r => {
+    r.addEventListener('change', programarAutoGuardado);
+  });
+});
 }
 
 /* ─── ACTUALIZAR UI ─── */
@@ -2079,7 +1967,16 @@ function actualizarUI() {
   const bd = el('badge-dia'); if (bd) bd.textContent = `Día ${diaActual} · 100`;
   const sd = el('sel-dia'); if (sd) sd.value = diaActual;
   const ba = el('btn-ant'); if (ba) ba.disabled = diaActual <= 1;
-  const bs = el('btn-sig'); if (bs) bs.disabled = diaActual >= 100;
+  const bs = el('btn-sig');
+  if (bs) {
+    const todos2 = ST.all();
+    const fechaHoy = hoy();
+    const diaActualEsHoy = todos2[diaActual]?.fecha === fechaHoy;
+    const siguienteTieneDatos = todos2[diaActual + 1] && tieneDatos(todos2[diaActual + 1]);
+    // Deshabilitar si: estamos en el día 100, O si estamos en el día de hoy Y el siguiente no tiene datos
+    bs.disabled = diaActual >= 100 || (diaActualEsHoy && !siguienteTieneDatos);
+    bs.title = (diaActualEsHoy && !siguienteTieneDatos) ? 'Ya estás en el día de hoy' : '';
+  }
   const baf = el('btn-ant-f'); if (baf) baf.disabled = diaActual <= 1;
   const fd = el('fecha-display'); const fv = valG('nav-fecha');
   if (fd) fd.textContent = fv || hoy();
@@ -2088,43 +1985,13 @@ function actualizarUI() {
   const bg = el('btn-guardar');
   if (bg) { if (diaActual === 100) { bg.textContent = 'Guardar día 100'; bg.onclick = guardarSolo; } else { bg.textContent = 'Guardar y Siguiente →'; bg.onclick = guardarYSiguiente; } }
   const bm = el('btn-meta'); if (bm) { if (count >= 100) bm.classList.add('visible'); else bm.classList.remove('visible'); }
-
-  // Dashboard — desbloquear desde el primer día registrado
-  const tabDash = el('tab-dashboard');
-  if (tabDash) {
-    tabDash.style.display = count >= 1 ? '' : 'none';
-  }
-
-  // Actualizar opciones del dashboard según días disponibles
-  const dashPeriodo = el('dash-periodo');
-  if (dashPeriodo) {
-    const opts = dashPeriodo.querySelectorAll('option');
-    if (opts[0]) opts[0].disabled = count < 1;
-    if (opts[1]) opts[1].disabled = count < 31;
-    if (opts[2]) opts[2].disabled = count < 61;
-    // Mostrar semanas completadas en la primera opción
-    if (opts[0] && count < 30) {
-      opts[0].textContent = `Días 1–30 · (${count} de 30)`;
-    } else if (opts[0]) {
-      opts[0].textContent = 'Días 1–30';
-    }
-  }
-
   const mapa = el('mapa');
   if (mapa) {
     mapa.innerHTML = '';
     for (let i = 1; i <= 100; i++) {
       const d = document.createElement('div');
-      const entrada = todos[i];
-      const tieneDia = tieneDatos(entrada);
-      const fecha = entrada?.fecha || '';
-      // Tooltip: "Día X · fecha" o "Día X · sin registro"
-      const info = tieneDia
-        ? `Día ${i} · ${fecha}`
-        : `Día ${i}`;
-      d.className = 'dia-pt' + (tieneDia ? ' done' : '') + (i === diaActual ? ' current' : '');
-      d.setAttribute('data-info', info);
-      d.onclick = () => irADia(i);
+      d.className = 'dia-pt' + (tieneDatos(todos[i]) ? ' done' : '') + (i === diaActual ? ' current' : '');
+      d.title = `Día ${i}`; d.onclick = () => irADia(i);
       mapa.appendChild(d);
     }
   }
@@ -2141,14 +2008,6 @@ function mostrarPanel(nombre) {
   const navDiario = el('hdr-nav-diario');
   if (navDiario) navDiario.style.display = nombre === 'diario' ? '' : 'none';
   if (nombre === 'dashboard') renderDashboard();
-  // Al volver al diario, recargar el día actual para que no quede en blanco
-  if (nombre === 'diario') {
-    const e = ST.get(diaActual);
-    limpiar();
-    if (e) llenar(e); else valS('nav-fecha', hoy());
-    renderFrase(diaActual);
-    actualizarUI();
-  }
 }
 
 /* ══════════════════════════════════════════════════════
@@ -2157,7 +2016,7 @@ function mostrarPanel(nombre) {
 function getEntradasPeriodo() {
   const todos = ST.all();
   const idx = parseInt(el('dash-periodo')?.value || '0');
-  const rangos = [[1,30],[31,60],[61,100]];
+  const rangos = [[1,30],[31,60],[61,90],[91,100]];
   const [ini, fin] = rangos[idx];
   return Object.values(todos)
     .filter(e => tieneDatos(e) && e.dia >= ini && e.dia <= fin)
@@ -2175,25 +2034,12 @@ function barraHTML(label, val, max, tipo = '') {
 
 function renderDashboard() {
   const inner = el('dash-inner');
-  const totalDias = contarDiasReales();
-
-  // Mostrar progreso si no hay suficientes días en el período seleccionado
   const entradas = getEntradasPeriodo();
   const n = entradas.length;
 
   if (n === 0) {
-    const idx = parseInt(el('dash-periodo')?.value || '0');
-    const mensajes = [
-      `Registra al menos 1 día para ver tu primer análisis. Llevas <strong>${totalDias}</strong> días.`,
-      `Necesitas llegar al día 31 para ver este período. Llevas <strong>${totalDias}</strong> días.`,
-      `Necesitas llegar al día 61 para ver este período. Llevas <strong>${totalDias}</strong> días.`
-    ];
-    inner.innerHTML = `<div class="vacio" style="text-align:center;padding:2rem;">
-      <span class="vacio-icon">🦋</span>
-      <div style="font-family:var(--bf);font-size:0.85rem;color:var(--muted);line-height:1.8;">
-        ${mensajes[idx] || mensajes[0]}
-      </div>
-    </div>`;
+    inner.innerHTML = `<div class="vacio"><span class="vacio-icon">🦋</span>
+      Aún no hay datos para este período.<br>Registra días y vuelve aquí para ver tus patrones.</div>`;
     return;
   }
 
@@ -2227,25 +2073,16 @@ function renderDashboard() {
     correlaciones.push(`No registraste episodios en este período. Eso es muy positivo. Tu promedio de sueño fue de <strong>${avgSleep}h</strong>.`);
   }
 
-  // Datos emociones — Expansión
-  const emosExp = {
-    Estrés:        entradas.filter(e=>e.emEst).length,
-    Ansiedad:      entradas.filter(e=>e.emAns).length,
+  // Datos emociones
+  const emos = {
+    Calma: entradas.filter(e=>e.emCal).length,
+    Estrés: entradas.filter(e=>e.emEst).length,
+    Ansiedad: entradas.filter(e=>e.emAns).length,
+    Tristeza: entradas.filter(e=>e.emTri).length,
     Irritabilidad: entradas.filter(e=>e.emIrr).length,
-    Alegría:       entradas.filter(e=>e.emAle).length,
-    Entusiasmo:    entradas.filter(e=>e.emEnt).length,
-    Energía:       entradas.filter(e=>e.emEne).length,
+    Miedo: entradas.filter(e=>e.emMie).length,
   };
-  // Datos emociones — Contención
-  const emosCon = {
-    Tristeza:   entradas.filter(e=>e.emTri).length,
-    Miedo:      entradas.filter(e=>e.emMie).length,
-    Calma:      entradas.filter(e=>e.emCal).length,
-    Gratitud:   entradas.filter(e=>e.emGra).length,
-    Confianza:  entradas.filter(e=>e.emCon).length,
-    Bienestar:  entradas.filter(e=>e.emBie).length,
-  };
-  const maxEmo = Math.max(...Object.values(emosExp), ...Object.values(emosCon), 1);
+  const maxEmo = Math.max(...Object.values(emos), 1);
 
   // Datos alimentación
   const ali = {
@@ -2316,10 +2153,7 @@ function renderDashboard() {
 
       <div class="chart-card">
         <div class="chart-title">♥ Emociones — frecuencia</div>
-        <div style="font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--purple-m);padding:4px 0 2px;border-bottom:1px solid var(--line);margin-bottom:4px;">Expansión</div>
-        ${Object.entries(emosExp).map(([k,v])=>barraHTML(k,v,maxEmo)).join('')}
-        <div style="font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:6px 0 2px;border-bottom:1px solid var(--line);margin-bottom:4px;">Contención</div>
-        ${Object.entries(emosCon).map(([k,v])=>barraHTML(k,v,maxEmo,'dark')).join('')}
+        ${Object.entries(emos).map(([k,v])=>barraHTML(k,v,maxEmo,k==='Calma'?'dark':k==='Estrés'||k==='Ansiedad'?'accent':'')).join('')}
       </div>
 
       <div class="chart-card">
@@ -2427,21 +2261,14 @@ function toastError(msg) {
   t.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>{t.classList.remove('show');t.style.background='';},6000);
 }
 
-/* ─── HOY (zona horaria del usuario) ─── */
-function obtenerTimezone() {
-  try {
-    const uid = obtenerUsuarioId();
-    const intro = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
-    return intro.timezone || 'America/Bogota';
-  } catch { return 'America/Bogota'; }
-}
+/* ─── HOY ─── */
 function hoy() {
-  const tz = obtenerTimezone();
+  // Usar hora local de Colombia (America/Bogota UTC-5)
   const ahora = new Date();
-  const local = new Date(ahora.toLocaleString('en-US', { timeZone: tz }));
-  const y = local.getFullYear();
-  const m = String(local.getMonth()+1).padStart(2,'0');
-  const d = String(local.getDate()).padStart(2,'0');
+  const bogota = new Date(ahora.toLocaleString('en-US', {timeZone: 'America/Bogota'}));
+  const y = bogota.getFullYear();
+  const m = String(bogota.getMonth()+1).padStart(2,'0');
+  const d = String(bogota.getDate()).padStart(2,'0');
   return y + '-' + m + '-' + d;
 }
 
@@ -2462,10 +2289,32 @@ function _initJournal() {
   conectarAutoGuardado();
   window.addEventListener('beforeunload', guardarAlCerrar);
   document.addEventListener('visibilitychange', ()=>{ if(document.hidden) guardarAlCerrar(); });
-  // Ir al primer día sin datos reales
+  // Abrir en el día que corresponde a HOY
   const todos = ST.all();
+  const fechaHoy = hoy();
   let inicio = 1;
-  for (let i=1;i<=100;i++) { if (!tieneDatos(todos[i])) { inicio=i; break; } if(i===100) inicio=100; }
+  let diaEncontrado = false;
+
+  // 1. Buscar si HOY ya tiene un registro con esa fecha
+  for (let i = 1; i <= 100; i++) {
+    if (todos[i] && todos[i].fecha === fechaHoy) {
+      inicio = i;
+      diaEncontrado = true;
+      break;
+    }
+  }
+
+  // 2. Si no hay registro de hoy, abrir el primer día sin datos
+  if (!diaEncontrado) {
+    for (let i = 1; i <= 100; i++) {
+      if (!tieneDatos(todos[i])) {
+        inicio = i;
+        break;
+      }
+      if (i === 100) inicio = 100;
+    }
+  }
+
   irADia(inicio);
 }
 
@@ -2480,24 +2329,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = await checkSession();
 
   if (user) {
-    // Tiene sesión — descargar datos
+    // Tiene sesión — descargar datos y entrar
     await descargarDatos();
-    // Verificar si ya completó el intro (tiene nombre o datos)
-    const uid = _sbUser?.id || obtenerUsuarioId();
-    const intro = JSON.parse(localStorage.getItem('capullo_intro_' + uid) || '{}');
-    const nombre = localStorage.getItem('capullo_nombre_' + uid) || '';
-    const tieneIntro = nombre || intro.tipo || intro.p1;
-
-    if (tieneIntro) {
-      // Usuario conocido — ir directo al diario
-      document.getElementById('pantalla-portada').style.display = 'none';
-      document.getElementById('pantalla-intro').style.display = 'none';
-      document.getElementById('pantalla-login').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      iniciarApp();
-    } else {
-      // Usuario nuevo — mostrar portada para comenzar el viaje
-      document.getElementById('pantalla-login').style.display = 'none';
+    const uid = obtenerUsuarioId();
+    const sk = 'capullo_v5_' + uid;
+    try {
+      const datos = JSON.parse(localStorage.getItem(sk) || '{}');
+      const tieneDias = Object.values(datos).some(d => d && typeof d === 'object');
+      if (tieneDias) {
+        document.getElementById('app').style.display = 'block';
+        iniciarApp();
+      } else {
+        document.getElementById('pantalla-portada').style.display = 'flex';
+      }
+    } catch {
       document.getElementById('pantalla-portada').style.display = 'flex';
     }
   } else {
@@ -2560,16 +2405,15 @@ function cargarPerfil() {
   const nombreGuardado = localStorage.getItem('capullo_nombre_' + uid) || '';
   const nombreCambiado = localStorage.getItem('capullo_nombre_locked_' + uid) === '1';
 
-  // Nombre — mostrar solo una vez
+  // Nombre
   const display = document.getElementById('perfil-nombre-display');
   const editZone = document.getElementById('perfil-nombre-edit-zone');
+  display.textContent = nombreGuardado || 'Sin nombre';
 
   if (!nombreCambiado) {
-    // Aún no guardado — mostrar input
-    display.textContent = '';
     editZone.innerHTML = `
       <div style="display:flex;gap:8px;justify-content:center;max-width:280px;margin:0 auto;">
-        <input id="perfil-nombre-input" type="text" placeholder="Una frase que acompaña tu journal"
+        <input id="perfil-nombre-input" type="text" placeholder="¿Cómo quieres llamarte?"
           value="${nombreGuardado}"
           style="flex:1;font-family:var(--tf);font-size:0.88rem;border:none;
           border-bottom:2px solid var(--purple-l);background:transparent;
@@ -2578,36 +2422,24 @@ function cargarPerfil() {
           font-family:var(--bf);font-size:0.78rem;
           background:var(--purple);color:#fff;border:none;
           padding:6px 14px;cursor:pointer;">Guardar</button>
+      </div>
+      <div style="font-family:var(--bf);font-size:0.7rem;color:var(--muted);margin-top:6px;">
+        Solo puedes cambiarlo una vez
       </div>`;
   } else {
-    // Ya guardado — mostrar solo en display, editZone vacío
-    display.textContent = nombreGuardado;
-    editZone.innerHTML = '';
+    editZone.innerHTML = `<div style="font-family:var(--bf);font-size:0.72rem;color:var(--muted);">Nombre guardado permanentemente</div>`;
   }
 
   // Datos iniciales
   const campos = [
     ['tipo','Tipo de epilepsia'],['edadCrisis','Edad de inicio'],
     ['tiempo','Tiempo con epilepsia'],['control','Control actual'],
-    ['desencadenantes','Desencadenantes'],
+    ['medicamentos','Medicamentos'],['desencadenantes','Desencadenantes'],
     ['actividad','Actividad física'],['pasatiempos','Pasatiempos'],
     ['habitos','Hábitos importantes']
   ];
   const datosEl = document.getElementById('perfil-datos-inicio');
   let datosHtml = '';
-
-  // Medicamentos — parsear como array estructurado
-  try {
-    const meds = JSON.parse(introData.medicamentos || '[]');
-    if (meds.length > 0) {
-      datosHtml += `<div style="margin-bottom:8px;"><strong>Medicamentos:</strong><br>`;
-      meds.forEach(m => {
-        datosHtml += `<div style="margin-left:12px;margin-top:3px;">• ${m.nombre}${m.dosis ? ' — ' + m.dosis : ''}${m.freq ? ' · ' + m.freq : ''}</div>`;
-      });
-      datosHtml += `</div>`;
-    }
-  } catch { }
-
   campos.forEach(([k, label]) => {
     const val = introData[k];
     if (val) datosHtml += `<div style="margin-bottom:6px;"><strong>${label}:</strong> ${val}</div>`;
@@ -2616,9 +2448,9 @@ function cargarPerfil() {
 
   // Preguntas
   const preguntas = [
-    ['p1','¿Qué crees que suele provocar tus episodios?'],
-    ['p2','¿Tu cuerpo te da alguna señal antes de un episodio?'],
-    ['p3','Después de un episodio, ¿qué suele necesitar tu cuerpo?'],
+    ['p1','¿Qué suele provocar tus crisis?'],
+    ['p2','¿Tu cuerpo te da señales antes de una crisis?'],
+    ['p3','Después de una crisis, ¿qué necesita tu cuerpo?'],
     ['p4','¿Qué te ayuda a estar en equilibrio?'],
     ['p5','¿Ha cambiado la forma en que te ves?'],
     ['p6','¿Qué quisieras entender mejor?']
@@ -2652,29 +2484,18 @@ function verIntroDesdePerfil() {
 // Update mostrarPanel to include perfil
 const _origMostrarPanel = mostrarPanel;
 mostrarPanel = function(panel) {
-  // Primero ocultar perfil siempre
-  const pp = document.getElementById('panel-perfil');
-  if (pp) pp.style.display = 'none';
-
+  _origMostrarPanel(panel);
   if (panel === 'perfil') {
-    // Ocultar diario y dashboard
-    ['diario','dashboard'].forEach(p => {
-      const panelEl = document.getElementById('panel-' + p);
-      if (panelEl) panelEl.style.display = 'none';
-    });
-    // Ocultar nav del diario
-    const navDiario = el('hdr-nav-diario');
-    if (navDiario) navDiario.style.display = 'none';
-    // Mostrar perfil y cargar datos
-    if (pp) pp.style.display = 'block';
+    document.getElementById('panel-perfil').style.display = 'block';
     cargarPerfil();
-  } else {
-    // Restaurar paneles normales
+    // Hide other panels
     ['diario','dashboard'].forEach(p => {
-      const panelEl = document.getElementById('panel-' + p);
-      if (panelEl) panelEl.style.display = '';
+      const el = document.getElementById('panel-' + p);
+      if (el) el.style.display = 'none';
     });
-    _origMostrarPanel(panel);
+  } else {
+    const pp = document.getElementById('panel-perfil');
+    if (pp) pp.style.display = 'none';
   }
 };
 
@@ -2707,10 +2528,6 @@ function loginTab(mode) {
   if (btn) btn.textContent = esReg ? 'Crear mi cuenta' : 'Ingresar';
 
   document.getElementById('login-msg').textContent = '';
-
-  // Ocultar botón de reenvío al cambiar de tab
-  const reenviarZona = document.getElementById('login-reenviar-zona');
-  if (reenviarZona) reenviarZona.style.display = 'none';
 }
 
 async function loginAccion() {
@@ -2735,85 +2552,49 @@ async function loginAccion() {
   try {
     if (_loginMode === 'registro') {
       const nombre = document.getElementById('login-nombre')?.value?.trim() || '';
-
       const { data, error } = await _sb.auth.signUp({
         email, password: pass,
         options: { data: { nombre } }
       });
       if (error) throw error;
 
-      if (data.session && data.user) {
-        // ✅ Sesión inmediata — confirmación de email desactivada en Supabase
-        _sbUser = data.user;
+      // Guardar nombre localmente
+      if (nombre) {
+        localStorage.setItem('capullo_nombre_' + obtenerUsuarioId(), nombre);
+        localStorage.setItem('capullo_nombre_locked_' + obtenerUsuarioId(), '1');
+      }
 
-        // Guardar nombre usando el ID real de Supabase
-        if (nombre) {
-          localStorage.setItem('capullo_nombre_' + data.user.id, nombre);
-          localStorage.setItem('capullo_nombre_locked_' + data.user.id, '1');
-        }
-
+      if (data.session) {
+        // Sesión inmediata — confirmación de email desactivada
         msg.style.color = '#A8E8A8';
-        msg.textContent = '¡Cuenta creada! Entrando...';
+        msg.textContent = '¡Bienvenida! Entrando...';
         setTimeout(() => {
-          // Ir directo a portada para comenzar el viaje
-          document.getElementById('pantalla-login').style.display = 'none';
-          document.getElementById('pantalla-portada').style.display = 'flex';
-          document.getElementById('pantalla-intro').style.display = 'none';
-          document.getElementById('app').style.display = 'none';
+          ocultarLogin();
+          sincronizarDatos();
+          continuarSinCuenta();
         }, 1000);
-
-      } else if (data.user && !data.session) {
-        // ⚠️ Supabase requiere confirmación de email
-        // Guardar nombre pendiente para cuando confirme
-        if (nombre) {
-          localStorage.setItem('capullo_nombre_pending_' + email, nombre);
-        }
-        msg.style.color = '#F5C47A';
-        msg.textContent = '✉ Revisa tu correo ' + email + ' y confirma tu cuenta para entrar.';
-        btn.textContent = 'Crear mi cuenta';
-        btn.disabled = false;
-
-        // Mostrar botón de reenvío
-        const reenviarZona = document.getElementById('login-reenviar-zona');
-        if (reenviarZona) {
-          reenviarZona.style.display = 'block';
-          reenviarZona.dataset.email = email;
-        }
-
       } else {
-        // Estado inesperado
-        throw new Error('No se pudo crear la cuenta. Intenta de nuevo.');
+        // Supabase pidió confirmación por email
+        msg.style.color = '#F5C47A';
+        msg.textContent = 'Revisa tu correo y confirma para entrar.';
+        btn.textContent = _loginMode === 'registro' ? 'Crear mi cuenta' : 'Ingresar';
+        btn.disabled = false;
       }
 
     } else {
-      // LOGIN
       const { data, error } = await _sb.auth.signInWithPassword({ email, password: pass });
       if (error) throw error;
-
-      // Si hay nombre pendiente de cuando se registró, guardarlo con el ID real
-      if (data.user) {
-        const nombrePendiente = localStorage.getItem('capullo_nombre_pending_' + email);
-        if (nombrePendiente) {
-          localStorage.setItem('capullo_nombre_' + data.user.id, nombrePendiente);
-          localStorage.setItem('capullo_nombre_locked_' + data.user.id, '1');
-          localStorage.removeItem('capullo_nombre_pending_' + email);
-        }
-      }
       // onAuthStateChange maneja el resto
     }
   } catch(e) {
     msg.style.color = '#F5C47A';
     const errMsg = e.message || '';
-    if (errMsg.includes('Failed to fetch') || errMsg.includes('fetch') || errMsg.includes('NetworkError')) {
-      msg.textContent = 'Sin conexión. Verifica tu internet e intenta de nuevo.';
-    } else if (errMsg.includes('already registered') || errMsg.includes('User already registered')) {
+    if (errMsg.includes('already registered')) {
       msg.textContent = 'Este correo ya tiene cuenta. Usa "Ingresar".';
-    } else if (errMsg.includes('Invalid login credentials') || errMsg.includes('Invalid login')) {
+    } else if (errMsg.includes('Invalid login')) {
       msg.textContent = 'Correo o contraseña incorrectos.';
     } else if (errMsg.includes('Email not confirmed')) {
-      msg.textContent = 'Confirma tu correo antes de ingresar. Revisa tu bandeja de entrada.';
-    } else if (errMsg.includes('signup_disabled') || errMsg.includes('Signups not allowed')) {
-      msg.textContent = 'El registro está temporalmente desactivado. Intenta más tarde.';
+      msg.textContent = 'Confirma tu correo antes de ingresar.';
     } else {
       msg.textContent = 'Error: ' + errMsg;
     }
@@ -2824,7 +2605,8 @@ async function loginAccion() {
 
 function continuarSinCuenta() {
   ocultarLogin();
-  const sk = getSK();
+  const uid = obtenerUsuarioId();
+  const sk = 'capullo_v5_' + uid;
   try {
     const datos = JSON.parse(localStorage.getItem(sk) || '{}');
     const tieneDias = Object.values(datos).some(d => d && typeof d === 'object');
@@ -2857,21 +2639,22 @@ function ocultarLogin() {
 // ── SYNC: subir datos locales a Supabase ──────────────────────
 async function sincronizarDatos() {
   if (!_sbUser) return;
+  const uid = obtenerUsuarioId();
+  const sk  = 'capullo_v5_' + uid;
+  const introKey = 'capullo_intro_' + uid;
+  const nombreKey = 'capullo_nombre_' + uid;
 
   try {
-    const sk       = getSK();
-    const introKey = 'capullo_intro_'  + _sbUser.id;
-    const nombreKey= 'capullo_nombre_' + _sbUser.id;
-
-    const datos  = JSON.parse(localStorage.getItem(sk)       || '{}');
-    const intro  = JSON.parse(localStorage.getItem(introKey) || '{}');
+    // Datos del diario
+    const datos = JSON.parse(localStorage.getItem(sk) || '{}');
+    const intro = JSON.parse(localStorage.getItem(introKey) || '{}');
     const nombre = localStorage.getItem(nombreKey) || '';
 
     const payload = {
-      user_id:    _sbUser.id,
-      diario:     datos,
-      intro:      intro,
-      nombre:     nombre,
+      user_id: _sbUser.id,
+      diario: datos,
+      intro: intro,
+      nombre: nombre,
       updated_at: new Date().toISOString()
     };
 
@@ -2881,7 +2664,6 @@ async function sincronizarDatos() {
 
     if (error) {
       console.log('Sync error:', error.message);
-      mostrarToast('⚠ Error al guardar en la nube');
     } else {
       console.log('Datos sincronizados OK');
       mostrarToast('✓ Datos guardados en la nube');
@@ -2894,6 +2676,7 @@ async function sincronizarDatos() {
 // ── SYNC: descargar datos desde Supabase ──────────────────────
 async function descargarDatos() {
   if (!_sbUser) return;
+  const uid = obtenerUsuarioId();
 
   try {
     const { data, error } = await _sb
@@ -2902,25 +2685,18 @@ async function descargarDatos() {
       .eq('user_id', _sbUser.id)
       .single();
 
-    if (error || !data) {
-      console.log('No hay datos en la nube aún');
-      return;
-    }
+    if (error || !data) return;
 
-    // Guardar siempre con el ID de Supabase como clave
-    const sk       = 'capullo_v5_'    + _sbUser.id;
-    const introKey = 'capullo_intro_'  + _sbUser.id;
-    const nombreKey= 'capullo_nombre_' + _sbUser.id;
-
+    // Restaurar en localStorage
     if (data.diario && Object.keys(data.diario).length > 0) {
-      localStorage.setItem(sk, JSON.stringify(data.diario));
+      localStorage.setItem('capullo_v5_' + uid, JSON.stringify(data.diario));
     }
-    if (data.intro && Object.keys(data.intro).length > 0) {
-      localStorage.setItem(introKey, JSON.stringify(data.intro));
+    if (data.intro) {
+      localStorage.setItem('capullo_intro_' + uid, JSON.stringify(data.intro));
     }
     if (data.nombre) {
-      localStorage.setItem(nombreKey, data.nombre);
-      localStorage.setItem('capullo_nombre_locked_' + _sbUser.id, '1');
+      localStorage.setItem('capullo_nombre_' + uid, data.nombre);
+      localStorage.setItem('capullo_nombre_locked_' + uid, '1');
     }
 
     console.log('Datos descargados OK');
@@ -2954,56 +2730,11 @@ function mostrarToast(msg) {
   }, 2500);
 }
 
-// ── Mostrar/ocultar contraseña ─────────────────────────────
-function togglePassword() {
-  const input = document.getElementById('login-pass');
-  const btn = document.getElementById('btn-eye');
-  if (input.type === 'password') {
-    input.type = 'text';
-    btn.textContent = '🙈';
-  } else {
-    input.type = 'password';
-    btn.textContent = '👁';
-  }
-}
-
-// ── Reenviar correo de confirmación ───────────────────────
-async function reenviarConfirmacion() {
-  const zona = document.getElementById('login-reenviar-zona');
-  const email = zona?.dataset?.email || document.getElementById('login-email')?.value?.trim();
-  const msg = document.getElementById('login-msg');
-  if (!email) return;
-
-  try {
-    const { error } = await _sb.auth.resend({ type: 'signup', email });
-    if (error) throw error;
-    msg.style.color = '#A8E8A8';
-    msg.textContent = '✉ Correo reenviado a ' + email + '. Revisa tu bandeja de entrada y spam.';
-  } catch(e) {
-    msg.style.color = '#F5C47A';
-    msg.textContent = 'No se pudo reenviar. Intenta de nuevo en un momento.';
-  }
-}
+// ── Cerrar sesión ─────────────────────────────────────────────
 async function cerrarSesion() {
-  try { await _sb.auth.signOut(); } catch(e) {}
-  _sbUser = null;
-  // Ocultar todo
-  ['app','pantalla-portada','pantalla-intro'].forEach(id => {
-    const e = document.getElementById(id);
-    if (e) e.style.display = 'none';
-  });
-  // Mostrar login
-  const login = document.getElementById('pantalla-login');
-  if (login) login.style.display = 'block';
-  // Cambiar a tab ingreso
-  if (typeof loginTab === 'function') loginTab('ingreso');
-  // Limpiar caché en segundo plano
-  try {
-    if ('caches' in window) {
-      const keys = await caches.keys();
-      for (let k of keys) await caches.delete(k);
-    }
-  } catch(e) {}
+  await _sb.auth.signOut();
+  mostrarToast('Sesión cerrada');
+  setTimeout(() => mostrarLogin(), 500);
 }
 
 // ── Auto-sync cada vez que se guarda un día ───────────────────
