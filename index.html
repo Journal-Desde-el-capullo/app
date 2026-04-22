@@ -872,14 +872,19 @@ async function checkSession() {
           transition:all 0.2s;">Crear mi cuenta</button>
 
         <!-- Separador continuar sin cuenta -->
-        <div style="text-align:center;margin-top:20px;">
+        <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid rgba(201,168,232,0.2);">
           <button onclick="continuarSinCuenta()" style="
-            font-family:'Source Serif 4',serif;font-size:0.75rem;
-            background:transparent;color:rgba(237,224,255,0.45);
-            border:none;cursor:pointer;text-decoration:underline;
-            text-underline-offset:3px;">
-            Continuar sin cuenta (datos solo en este dispositivo)
+            font-family:'Source Serif 4',serif;font-size:0.82rem;
+            background:transparent;color:rgba(237,224,255,0.75);
+            border:1px solid rgba(201,168,232,0.35);
+            border-radius:6px;padding:10px 20px;
+            cursor:pointer;width:100%;">
+            Entrar sin cuenta →
           </button>
+          <div style="font-family:'Source Serif 4',serif;font-size:0.68rem;
+            color:rgba(237,224,255,0.35);margin-top:6px;">
+            Los datos se guardan en este dispositivo
+          </div>
         </div>
       </div>
 
@@ -2325,28 +2330,43 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('app').style.display = 'none';
   document.getElementById('pantalla-login').style.display = 'none';
 
-  // Verificar sesión Supabase
-  const user = await checkSession();
+  // Verificar sesión Supabase con timeout de 4 segundos
+  let user = null;
+  try {
+    const sessionPromise = checkSession();
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000));
+    user = await Promise.race([sessionPromise, timeoutPromise]);
+  } catch(e) {
+    console.log('Supabase timeout o error — entrando sin sesión');
+  }
+
+  const uid = obtenerUsuarioId();
+  const sk = 'capullo_v5_' + uid;
+  let tieneDias = false;
+  try {
+    const datos = JSON.parse(localStorage.getItem(sk) || '{}');
+    tieneDias = Object.values(datos).some(d => d && typeof d === 'object');
+  } catch {}
 
   if (user) {
     // Tiene sesión — descargar datos y entrar
-    await descargarDatos();
-    const uid = obtenerUsuarioId();
-    const sk = 'capullo_v5_' + uid;
+    try { await descargarDatos(); } catch {}
     try {
-      const datos = JSON.parse(localStorage.getItem(sk) || '{}');
-      const tieneDias = Object.values(datos).some(d => d && typeof d === 'object');
-      if (tieneDias) {
-        document.getElementById('app').style.display = 'block';
-        iniciarApp();
-      } else {
-        document.getElementById('pantalla-portada').style.display = 'flex';
-      }
-    } catch {
+      const datos2 = JSON.parse(localStorage.getItem(sk) || '{}');
+      tieneDias = Object.values(datos2).some(d => d && typeof d === 'object');
+    } catch {}
+    if (tieneDias) {
+      document.getElementById('app').style.display = 'block';
+      iniciarApp();
+    } else {
       document.getElementById('pantalla-portada').style.display = 'flex';
     }
+  } else if (tieneDias) {
+    // Sin sesión pero tiene datos locales — entrar directo al journal
+    document.getElementById('app').style.display = 'block';
+    iniciarApp();
   } else {
-    // Sin sesión — mostrar login
+    // Sin sesión ni datos — mostrar login pero con opción visible de continuar
     mostrarLogin();
   }
 });
